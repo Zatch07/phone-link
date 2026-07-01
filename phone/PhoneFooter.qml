@@ -44,11 +44,16 @@ Item {
 
     signal requestOpenSubPage(url target)
 
-    readonly property bool _scrcpyPresent: ExtensionServices.get("phone-link", "KdeConnectService") ? ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable : false
-    readonly property bool _droidcamPresent: ExtensionServices.get("phone-link", "PhoneCameraService") ? ExtensionServices.get("phone-link", "PhoneCameraService").available : false
-    readonly property bool _micPresent: ExtensionServices.get("phone-link", "PhoneMicService") ? ExtensionServices.get("phone-link", "PhoneMicService").available : false
+    // ─── Null-safe service aliases ─────────────────────────
+    readonly property var _kdc: ExtensionServices.get("phone-link", "KdeConnectService")
+    readonly property var _cam: ExtensionServices.get("phone-link", "PhoneCameraService")
+    readonly property var _mic: ExtensionServices.get("phone-link", "PhoneMicService")
 
-    readonly property bool _deviceOnline: ExtensionServices.get("phone-link", "KdeConnectService") ? ExtensionServices.get("phone-link", "KdeConnectService").activeReachable : false
+    readonly property bool _scrcpyPresent: _kdc ? _kdc.scrcpyAvailable : false
+    readonly property bool _droidcamPresent: _cam ? _cam.available : false
+    readonly property bool _micPresent: _mic ? _mic.available : false
+
+    readonly property bool _deviceOnline: _kdc ? _kdc.activeReachable : false
 
     // ─── Install guide popup state ─────────────────────────
     // When visible, shows a floating overlay listing missing dependencies
@@ -104,63 +109,61 @@ Item {
             }
             state: !root._scrcpyPresent ? "unavailable"
                 : !root._deviceOnline ? "offline"
-                : ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning ? "active"
-                : ExtensionServices.get("phone-link", "KdeConnectService").scrcpyLaunching ? "connecting"
+                : root._kdc && root._kdc.scrcpyRunning ? "active"
+                : root._kdc && root._kdc.scrcpyLaunching ? "connecting"
                 : "ready"
-            detailLine: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
-                ? Translation.tr("Active for %1").arg(root._fmtElapsed(ExtensionServices.get("phone-link", "KdeConnectService").scrcpyElapsedMs))
+            detailLine: (root._kdc && root._kdc.scrcpyRunning)
+                ? Translation.tr("Active for %1").arg(root._fmtElapsed(root._kdc.scrcpyElapsedMs))
                 : ""
-            dropEnabled: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning && root._deviceOnline
+            dropEnabled: root._kdc && root._kdc.scrcpyRunning && root._deviceOnline
             onFilesDropped: urls => {
                 urls.forEach(url => {
                     const file = String(url).replace(/^file:\/\//, "")
-                    if (file.length > 0)
-                        ExtensionServices.get("phone-link", "KdeConnectService").shareUrl(ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId, file)
+                    if (file.length > 0 && root._kdc)
+                        root._kdc.shareUrl(root._kdc.activeDeviceId, file)
                 })
             }
-            inlineActions: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning ? [
+            inlineActions: (root._kdc && root._kdc.scrcpyRunning) ? [
                 {
                     icon: "center_focus_strong",
                     label: Translation.tr("Focus window"),
-                    onClicked: () => ExtensionServices.get("phone-link", "KdeConnectService").focusScrcpyWindow()
+                    onClicked: () => root._kdc && root._kdc.focusScrcpyWindow()
                 },
                 {
                     icon: "screenshot_monitor",
                     label: Translation.tr("Phone screenshot"),
-                    onClicked: () => ExtensionServices.get("phone-link", "KdeConnectService").adbScreenshot()
+                    onClicked: () => root._kdc && root._kdc.adbScreenshot()
                 },
                 {
                     icon: "power_settings_new",
                     label: Translation.tr("Toggle phone power"),
-                    onClicked: () => ExtensionServices.get("phone-link", "KdeConnectService").adbTogglePower()
+                    onClicked: () => root._kdc && root._kdc.adbTogglePower()
                 },
                 {
-                    icon: ExtensionServices.get("phone-link", "KdeConnectService").adbReachable ? "cast_connected" : "cast",
-                    label: ExtensionServices.get("phone-link", "KdeConnectService").adbReachable
+                    icon: (root._kdc && root._kdc.adbReachable) ? "cast_connected" : "cast",
+                    label: (root._kdc && root._kdc.adbReachable)
                         ? Translation.tr("ADB reachable")
                         : Translation.tr("ADB not connected"),
-                    onClicked: () => ExtensionServices.get("phone-link", "KdeConnectService")._probeAdb()
+                    onClicked: () => root._kdc && root._kdc._probeAdb()
                 }
             ] : []
             lastError: ""
             onClicked: {
-                if (root._scrcpyPresent) {
-                    if (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning) {
-                        // Stop scrcpy — kill existing instance.
-                        ExtensionServices.get("phone-link", "KdeConnectService").killScrcpy()
-                    } else if (!ExtensionServices.get("phone-link", "KdeConnectService").scrcpyLaunching) {
-                        ExtensionServices.get("phone-link", "KdeConnectService").launchScrcpy(ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId)
+                if (root._scrcpyPresent && root._kdc) {
+                    if (root._kdc.scrcpyRunning) {
+                        root._kdc.killScrcpy()
+                    } else if (!root._kdc.scrcpyLaunching) {
+                        root._kdc.launchScrcpy(root._kdc.activeDeviceId)
                     }
-                } else {
-                    // Open the install guide popup showing missing deps.
+                } else if (root._kdc) {
                     root._openInstallGuide(
-                        ExtensionServices.get("phone-link", "KdeConnectService").scrcpyMissingDeps,
+                        root._kdc.scrcpyMissingDeps,
                         Translation.tr("scrcpy Mirror — Missing Dependencies"))
                 }
             }
             onStopClicked: {
-                if (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning)
-                    ExtensionServices.get("phone-link", "KdeConnectService").killScrcpy()
+                if (root._kdc && root._kdc.scrcpyRunning)
+                    root._kdc.killScrcpy()
             }
         }
 
@@ -177,50 +180,48 @@ Item {
                     return Translation.tr("Click to see missing dependencies and install guide")
                 if (!root._deviceOnline)
                     return Translation.tr("Pair a reachable device to use its camera")
-                if (ExtensionServices.get("phone-link", "PhoneCameraService").connecting)
-                    return Translation.tr("Connecting to %1:%2…").arg(ExtensionServices.get("phone-link", "PhoneCameraService").activeIp || "?").arg(String(ExtensionServices.get("phone-link", "PhoneCameraService").activePort))
-                if (ExtensionServices.get("phone-link", "PhoneCameraService").running)
-                    return ExtensionServices.get("phone-link", "PhoneCameraService").videoDevice || "/dev/videoN"
+                if (root._cam && root._cam.connecting)
+                    return Translation.tr("Connecting to %1:%2…").arg(root._cam.activeIp || "?").arg(String(root._cam.activePort))
+                if (root._cam && root._cam.running)
+                    return root._cam.videoDevice || "/dev/videoN"
                 return Translation.tr("Tap to start · settings to configure")
             }
             state: !root._droidcamPresent ? "unavailable"
                 : !root._deviceOnline ? "offline"
-                : ExtensionServices.get("phone-link", "PhoneCameraService").connecting ? "connecting"
-                : ExtensionServices.get("phone-link", "PhoneCameraService").running ? "active"
+                : (root._cam && root._cam.connecting) ? "connecting"
+                : (root._cam && root._cam.running) ? "active"
                 : "ready"
             detailLine: {
-                if (!ExtensionServices.get("phone-link", "PhoneCameraService").running) return ""
-                const el = root._fmtElapsed(ExtensionServices.get("phone-link", "PhoneCameraService").elapsedMs)
-                const ip = ExtensionServices.get("phone-link", "PhoneCameraService").activeIp || "(usb)"
-                const port = String(ExtensionServices.get("phone-link", "PhoneCameraService").activePort)
-                const dev = ExtensionServices.get("phone-link", "PhoneCameraService").videoDevice || "/dev/videoN"
+                if (!root._cam || !root._cam.running) return ""
+                const el = root._fmtElapsed(root._cam.elapsedMs)
+                const ip = root._cam.activeIp || "(usb)"
+                const port = String(root._cam.activePort)
+                const dev = root._cam.videoDevice || "/dev/videoN"
                 return "Active for " + el + " · " + ip + ":" + port + " · " + dev
             }
-            lastError: ExtensionServices.get("phone-link", "PhoneCameraService").lastError
-            inlineActions: ExtensionServices.get("phone-link", "PhoneCameraService").running ? [
+            lastError: root._cam ? root._cam.lastError : ""
+            inlineActions: (root._cam && root._cam.running) ? [
                 {
                     icon: "preview",
                     label: Translation.tr("Open preview window (mpv)"),
-                    onClicked: () => ExtensionServices.get("phone-link", "PhoneCameraService").openExternalPreview()
+                    onClicked: () => root._cam && root._cam.openExternalPreview()
                 }
             ] : []
             onClicked: {
                 if (!root._droidcamPresent) {
-                    // Open the install guide popup showing missing deps
-                    // (droidcam-cli, v4l2loopback, v4l-utils, mpv).
                     root._openInstallGuide(
-                        ExtensionServices.get("phone-link", "PhoneCameraService").missingDeps,
+                        root._cam ? root._cam.missingDeps : [],
                         Translation.tr("Phone Webcam — Missing Dependencies"))
                     return
                 }
-                if (ExtensionServices.get("phone-link", "PhoneCameraService").connecting || ExtensionServices.get("phone-link", "PhoneCameraService").running) {
-                    ExtensionServices.get("phone-link", "PhoneCameraService").stopCamera()
-                } else {
-                    ExtensionServices.get("phone-link", "PhoneCameraService").startCamera()
+                if (root._cam && (root._cam.connecting || root._cam.running)) {
+                    root._cam.stopCamera()
+                } else if (root._cam) {
+                    root._cam.startCamera()
                 }
             }
             onStopClicked: {
-                ExtensionServices.get("phone-link", "PhoneCameraService").stopCamera()
+                if (root._cam) root._cam.stopCamera()
             }
         }
 
@@ -237,93 +238,90 @@ Item {
                     return Translation.tr("Click to see missing dependencies and install guide")
                 if (!root._deviceOnline)
                     return Translation.tr("Pair a reachable device to use its microphone")
-                if (ExtensionServices.get("phone-link", "PhoneMicService").connecting)
+                if (root._mic && root._mic.connecting)
                     return Translation.tr("Set up audio routing…")
-                if (ExtensionServices.get("phone-link", "PhoneMicService").running)
-                    return ExtensionServices.get("phone-link", "PhoneMicService").muted
+                if (root._mic && root._mic.running)
+                    return root._mic.muted
                         ? Translation.tr("Muted · click to unmute")
                         : Translation.tr("Active · click to mute")
                 return Translation.tr("Tap to start · uses scrcpy or DroidCam")
             }
             state: !root._micPresent ? "unavailable"
                 : !root._deviceOnline ? "offline"
-                : ExtensionServices.get("phone-link", "PhoneMicService").connecting ? "connecting"
-                : ExtensionServices.get("phone-link", "PhoneMicService").running ? "active"
+                : (root._mic && root._mic.connecting) ? "connecting"
+                : (root._mic && root._mic.running) ? "active"
                 : "ready"
             detailLine: {
-                if (!ExtensionServices.get("phone-link", "PhoneMicService").running) return ""
-                const el = root._fmtElapsed(ExtensionServices.get("phone-link", "PhoneMicService").elapsedMs)
-                const gain = String(ExtensionServices.get("phone-link", "PhoneMicService").micGain) + "%"
-                const suffix = ExtensionServices.get("phone-link", "PhoneMicService").defaultOverridden
+                if (!root._mic || !root._mic.running) return ""
+                const el = root._fmtElapsed(root._mic.elapsedMs)
+                const gain = String(root._mic.micGain) + "%"
+                const suffix = root._mic.defaultOverridden
                     ? " · " + Translation.tr("default input")
                     : ""
                 return "Active for " + el + " · " + gain + suffix
             }
-            lastError: ExtensionServices.get("phone-link", "PhoneMicService").lastError
-            inlineActions: ExtensionServices.get("phone-link", "PhoneMicService").running ? [
+            lastError: root._mic ? root._mic.lastError : ""
+            inlineActions: (root._mic && root._mic.running) ? [
                 {
-                    icon: ExtensionServices.get("phone-link", "PhoneMicService").muted ? "mic_off" : "mic",
-                    label: ExtensionServices.get("phone-link", "PhoneMicService").muted
+                    icon: root._mic.muted ? "mic_off" : "mic",
+                    label: root._mic.muted
                         ? Translation.tr("Unmute")
                         : Translation.tr("Mute"),
-                    onClicked: () => ExtensionServices.get("phone-link", "PhoneMicService").toggleMute()
+                    onClicked: () => root._mic && root._mic.toggleMute()
                 },
                 {
-                    icon: ExtensionServices.get("phone-link", "PhoneMicService").monitorEnabled ? "hearing" : "hearing_disabled",
-                    label: ExtensionServices.get("phone-link", "PhoneMicService").monitorEnabled
+                    icon: root._mic.monitorEnabled ? "hearing" : "hearing_disabled",
+                    label: root._mic.monitorEnabled
                         ? Translation.tr("Stop monitoring")
                         : Translation.tr("Hear yourself"),
-                    onClicked: () => ExtensionServices.get("phone-link", "PhoneMicService").toggleMonitor()
+                    onClicked: () => root._mic && root._mic.toggleMonitor()
                 },
                 {
                     icon: "tune",
-                    label: Translation.tr("Gain: %1%").arg(String(ExtensionServices.get("phone-link", "PhoneMicService").micGain)),
+                    label: Translation.tr("Gain: %1%").arg(String(root._mic.micGain)),
                     onClicked: () => {
-                        // Cycle gain: 100 → 150 → 200 → 50 → 100.
-                        const g = ExtensionServices.get("phone-link", "PhoneMicService").micGain
+                        if (!root._mic) return
+                        const g = root._mic.micGain
                         const next = g < 100 ? 100
                                    : g < 150 ? 150
                                    : g < 200 ? 200
                                    : 50
-                        ExtensionServices.get("phone-link", "PhoneMicService").setGain(next)
+                        root._mic.setGain(next)
                     }
                 },
                 {
-                    icon: ExtensionServices.get("phone-link", "PhoneMicService").defaultOverridden ? "star" : "star_border",
-                    label: ExtensionServices.get("phone-link", "PhoneMicService").defaultOverridden
+                    icon: root._mic.defaultOverridden ? "star" : "star_border",
+                    label: root._mic.defaultOverridden
                         ? Translation.tr("Restore default source")
                         : Translation.tr("Set as default input"),
                     onClicked: () => {
-                        if (ExtensionServices.get("phone-link", "PhoneMicService").defaultOverridden)
-                            ExtensionServices.get("phone-link", "PhoneMicService").restoreDefaultSource()
+                        if (!root._mic) return
+                        if (root._mic.defaultOverridden)
+                            root._mic.restoreDefaultSource()
                         else
-                            ExtensionServices.get("phone-link", "PhoneMicService").overrideDefaultSource()
+                            root._mic.overrideDefaultSource()
                     }
                 }
             ] : []
             onClicked: {
                 if (!root._micPresent) {
-                    // Open the install guide popup showing missing deps
-                    // (pactl, scrcpy or droidcam-cli).
                     root._openInstallGuide(
-                        ExtensionServices.get("phone-link", "PhoneMicService").missingDeps,
+                        root._mic ? root._mic.missingDeps : [],
                         Translation.tr("Phone Microphone — Missing Dependencies"))
                     return
                 }
-                // If running, primary click toggles mute. The Stop button
-                // (via stopClicked) handles the actual stop.
-                if (ExtensionServices.get("phone-link", "PhoneMicService").running && !ExtensionServices.get("phone-link", "PhoneMicService").connecting) {
-                    ExtensionServices.get("phone-link", "PhoneMicService").toggleMute()
+                if (root._mic && root._mic.running && !root._mic.connecting) {
+                    root._mic.toggleMute()
                     return
                 }
-                if (ExtensionServices.get("phone-link", "PhoneMicService").connecting) {
-                    ExtensionServices.get("phone-link", "PhoneMicService").stopMic()
-                } else {
-                    ExtensionServices.get("phone-link", "PhoneMicService").startMic()
+                if (root._mic && root._mic.connecting) {
+                    root._mic.stopMic()
+                } else if (root._mic) {
+                    root._mic.startMic()
                 }
             }
             onStopClicked: {
-                ExtensionServices.get("phone-link", "PhoneMicService").stopMic()
+                if (root._mic) root._mic.stopMic()
             }
         }
     }
@@ -336,13 +334,12 @@ Item {
         visible: root._installGuideVisible
         missingDeps: root._installGuideDeps
         detectedDistro: {
-            // Prefer ExtensionServices.get("phone-link", "PhoneCameraService")'s detection, fall back to others.
-            if (ExtensionServices.get("phone-link", "PhoneCameraService").detectedDistro && ExtensionServices.get("phone-link", "PhoneCameraService").detectedDistro !== "unknown")
-                return ExtensionServices.get("phone-link", "PhoneCameraService").detectedDistro
-            if (ExtensionServices.get("phone-link", "PhoneMicService").detectedDistro && ExtensionServices.get("phone-link", "PhoneMicService").detectedDistro !== "unknown")
-                return ExtensionServices.get("phone-link", "PhoneMicService").detectedDistro
-            if (ExtensionServices.get("phone-link", "KdeConnectService").detectedDistro && ExtensionServices.get("phone-link", "KdeConnectService").detectedDistro !== "unknown")
-                return ExtensionServices.get("phone-link", "KdeConnectService").detectedDistro
+            if (root._cam && root._cam.detectedDistro && root._cam.detectedDistro !== "unknown")
+                return root._cam.detectedDistro
+            if (root._mic && root._mic.detectedDistro && root._mic.detectedDistro !== "unknown")
+                return root._mic.detectedDistro
+            if (root._kdc && root._kdc.detectedDistro && root._kdc.detectedDistro !== "unknown")
+                return root._kdc.detectedDistro
             return "unknown"
         }
         headerTitle: root._installGuideTitle
@@ -350,12 +347,12 @@ Item {
             if (!visible) root._installGuideVisible = false
         }
         onRefreshRequested: {
-            // Re-check all 3 services — the user may have installed deps
-            // for any of the features.
-            ExtensionServices.get("phone-link", "PhoneCameraService").refresh()
-            ExtensionServices.get("phone-link", "PhoneMicService").refresh()
-            ExtensionServices.get("phone-link", "KdeConnectService").checkScrcpyProc.running = true
-            ExtensionServices.get("phone-link", "KdeConnectService").checkAdbProc.running = true
+            if (root._cam) root._cam.refresh()
+            if (root._mic) root._mic.refresh()
+            if (root._kdc) {
+                root._kdc.checkScrcpyProc.running = true
+                root._kdc.checkAdbProc.running = true
+            }
         }
     }
 }
