@@ -448,17 +448,18 @@ Singleton {
         root._userStopped = false
         root.stateChanged()
 
-        const _svc = ExtensionServices.get("phone-link", "KdeConnectService"); const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
-        const port = conf.port || 4747
+        const _svc = ExtensionServices.get("phone-link", "KdeConnectService"); const conf = (_svc && _svc.config && _svc.config.webcam) ? _svc.config.webcam : null
+        const port = (conf && conf.port) ? conf.port : 4747
+        const connection = (conf && conf.connection) ? conf.connection : "usb"
 
         // Case 1: explicit USB preference — launch immediately.
-        if (conf.connection === "usb") {
+        if (connection === "usb") {
             root._launchCameraProcess("usb", port, "")
             return
         }
 
         // Case 2: Wi-Fi preference with explicit IP — launch immediately.
-        const userIp = (conf.wifiIp || "").trim()
+        const userIp = ((conf && conf.wifiIp) ? conf.wifiIp : "").trim()
         if (userIp.length > 0) {
             root._launchCameraProcess("wifi", port, userIp)
             return

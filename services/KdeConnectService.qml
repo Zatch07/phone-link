@@ -1506,21 +1506,16 @@ Singleton {
     }
 
     function killScrcpy() {
-        // Only kill scrcpy MIRROR processes (ones with --window-title).
-        // The PhoneMicService also uses scrcpy with --audio-source=mic and
-        // --no-window; killing it here would silently stop the phone
-        // microphone while the mic card still shows "running".
-        //
-        // Uses `for pid in $(pgrep ...)` instead of `pgrep | while read`
-        // for the same reason as checkScrcpyRunningProc — the pipe form
-        // runs in a subshell (though `kill $pid` works in a subshell,
-        // we keep the pattern consistent).
+        // Kill all scrcpy MIRROR processes (ones with --window-title) at once.
+        // Using pkill -f to match the command line argument directly — this
+        // is simpler and more reliable than the pgrep loop which could miss
+        // instances if they were spawned rapidly (as seen in logs where 4
+        // separate scrcpy windows were opened in one session).
         Quickshell.execDetached(["bash", "-c",
-            "for pid in $(pgrep -x scrcpy 2>/dev/null); do " +
-            "  if tr '\\0' ' ' < /proc/$pid/cmdline 2>/dev/null | grep -q -- '--window-title'; then " +
-            "    kill $pid 2>/dev/null; " +
-            "  fi; " +
-            "done"])
+            "pkill -f -- '--window-title' 2>/dev/null; " +
+            "sleep 0.5; " +
+            "pkill -9 -f -- '--window-title' 2>/dev/null; " +
+            "true"])
         root.scrcpyRunning = false
         root.scrcpyLaunching = false
         scrcpyLaunchFallbackTimer.stop()
