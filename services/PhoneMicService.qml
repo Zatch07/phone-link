@@ -138,7 +138,7 @@ Singleton {
     }
 
     // Mirror ExtensionServices.get("phone-link", "KdeConnectService")._enabled: stays dormant when Phone tab is off.
-    readonly property bool _enabled: Config.options.policies.phone !== 0
+    readonly property bool _enabled: true
 
     on_EnabledChanged: {
         if (root._enabled) {

@@ -248,7 +248,7 @@ Singleton {
     // Reflects Config.options.policies.phone. When false, the service stays
     // dormant: no DBus monitor, no pgrep polling, no ADB probing. Bindings
     // from the UI still resolve without forcing instantiation side effects.
-    readonly property bool _enabled: Config.options.policies.phone !== 0
+    readonly property bool _enabled: true
 
     // Stop all background activity when the Phone tab is toggled off at runtime.
     // Restart when toggled back on. This lets users enable/disable Phone
@@ -1409,7 +1409,7 @@ Singleton {
             deepLinkCmd = "adb shell am start -a " + actionArg + dataArg + " >/dev/null 2>&1; "
         }
 
-        const terminal = Config.options.apps.terminal || "kitty -1"
+        const terminal = (Config.options && Config.options.apps && Config.options.apps.terminal) ? Config.options.apps.terminal : "kitty -1"
         const fullScrcpyCmd = deepLinkCmd + baseCmd + scrcpyArgs.join(" ")
 
         if (showTerminal) {

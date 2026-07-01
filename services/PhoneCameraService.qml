@@ -88,7 +88,7 @@ Singleton {
     }
 
     // Mirror ExtensionServices.get("phone-link", "KdeConnectService")._enabled: stays dormant when Phone tab is off.
-    readonly property bool _enabled: Config.options.policies.phone !== 0
+    readonly property bool _enabled: true
 
     on_EnabledChanged: {
         if (root._enabled) {
@@ -448,7 +448,7 @@ Singleton {
         root._userStopped = false
         root.stateChanged()
 
-        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.webcam
+        const _svc = ExtensionServices.get("phone-link", "KdeConnectService"); const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
         const port = conf.port || 4747
 
         // Case 1: explicit USB preference — launch immediately.
@@ -478,7 +478,7 @@ Singleton {
      * onExited (case 3).
      */
     function _launchCameraProcess(mode: string, port: int, ip: string): void {
-        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.webcam
+        const _svc = ExtensionServices.get("phone-link", "KdeConnectService"); const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
 
         // Build args using the CORRECT droidcam-cli 2.1.5 syntax (single-dash, =).
         const args = ["droidcam-cli", "-nocontrols"]
@@ -561,7 +561,7 @@ Singleton {
      * if the control is not available we restart the process with -hflip.
      */
     function toggleMirror(): void {
-        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.webcam
+        const _svc = ExtensionServices.get("phone-link", "KdeConnectService"); const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
         conf.mirrorHorizontally = !conf.mirrorHorizontally
         if (root.running && root.videoDevice.length > 0) {
             // Try v4l2-ctl first — works on some v4l2loopback configs.
@@ -580,7 +580,7 @@ Singleton {
      * running (since 180° = -vflip -hflip and 90/270 need app-side rotation).
      */
     function setRotation(degrees: int): void {
-        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.webcam
+        const _svc = ExtensionServices.get("phone-link", "KdeConnectService"); const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
         conf.rotateDegrees = degrees
         if (root.running || root.connecting) {
             root.stopCamera()
@@ -596,7 +596,7 @@ Singleton {
      * the DroidCam app on their phone and tap the camera flip button there.
      */
     function flipCamera(): void {
-        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.webcam
+        const _svc = ExtensionServices.get("phone-link", "KdeConnectService"); const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
         conf.cameraFacing = (conf.cameraFacing === "front") ? "back" : "front"
         // Do NOT restart the connection — droidcam-cli can't toggle the
         // camera. The user needs to switch it in the DroidCam app on the
@@ -683,7 +683,7 @@ Singleton {
                 root._launchCameraProcess("usb", root._pendingPort, "")
             } else {
                 // USB not available — try the auto-detected Wi-Fi IP.
-                const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.webcam
+                const _svc = ExtensionServices.get("phone-link", "KdeConnectService"); const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
                 const ip = root._resolveIp(conf)
                 if (!ip) {
                     root.connecting = false
