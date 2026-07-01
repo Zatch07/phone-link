@@ -20,5 +20,21 @@
       { "id": "PhoneCameraService", "qml": "services/PhoneCameraService.qml" },
       { "id": "PhoneMicService", "qml": "services/PhoneMicService.qml" }
     ]
+  },
+  "configDefaults": {
+    "webcam_resolution": "1280x720"
+  },
+  "configSchema": {
+    "webcam_resolution": {
+      "type": "enum",
+      "label": "Webcam Resolution",
+      "icon": "aspect_ratio",
+      "default": "1280x720",
+      "options": [
+        { "displayName": "480p", "value": "640x480" },
+        { "displayName": "720p", "value": "1280x720" },
+        { "displayName": "1080p", "value": "1920x1080" }
+      ]
+    }
   }
 }

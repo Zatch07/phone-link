@@ -83,7 +83,12 @@ Singleton {
             property string connection: "usb"
             property string wifiIp: ""
             property int port: 4747
-            property string resolution: "1280x720"
+            property string resolution: typeof ExtensionManager !== "undefined" ? (ExtensionManager.extensionConfigs["phone-link"]?.webcam_resolution ?? "1280x720") : "1280x720"
+            onResolutionChanged: {
+                if (typeof ExtensionManager !== "undefined" && ExtensionManager.extensionConfigs["phone-link"]?.webcam_resolution !== resolution) {
+                    ExtensionManager.setExtensionConfig("phone-link", "webcam_resolution", resolution)
+                }
+            }
             property int fps: 30
             property bool mirrorHorizontally: false
             property int rotateDegrees: 0
