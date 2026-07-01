@@ -960,6 +960,12 @@ Item {
             enabled: isOpen
             visible: x < subPageOverlay.width
 
+            Rectangle {
+                anchors.fill: parent
+                color: Appearance.colors.colLayer2
+                radius: Appearance.rounding.normal
+            }
+
             Loader {
                 id: subPageLoader
                 anchors.fill: parent
