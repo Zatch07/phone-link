@@ -41,7 +41,13 @@
       "label": "Run Dependencies Script",
       "icon": "terminal",
       "buttonText": "Run in Kitty",
-      "exec": "kitty -- bash -c 'cd ~/.config/illogical-impulse/extensions/installed/phone-link && ./install_dependencies.sh; echo \"\"; read -p \"Press Enter to exit\"'"
+      "exec": [
+        "kitty", 
+        "--", 
+        "bash", 
+        "-c", 
+        "cd ~/.config/illogical-impulse/extensions/installed/phone-link && ./install_dependencies.sh; echo \"\"; read -p \"Press Enter to exit\""
+      ]
     }
   }
 }
