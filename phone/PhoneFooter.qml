@@ -40,7 +40,7 @@ Item {
 
     implicitHeight: visible ? footerColumn.implicitHeight : 0
     height: visible ? implicitHeight : 0
-    visible: Config.options.phone.showPeripheralCards
+    visible: ExtensionServices.get("phone-link", "KdeConnectService").config.showPeripheralCards
 
     signal requestOpenSubPage(url target)
 

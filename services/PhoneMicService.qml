@@ -475,7 +475,7 @@ Singleton {
     // ─── Public API ────────────────────────────────────────
 
     /**
-     * Starts the droidcam-cli audio process using Config.options.phone.microphone.
+     * Starts the droidcam-cli audio process using ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.
      *
      * Connection selection priority (mirrors PhoneCameraService):
      *   1. If user set `connection: "usb"` → use ADB directly.
@@ -512,7 +512,7 @@ Singleton {
         root._userStopped = false
         root.stateChanged()
 
-        const conf = Config.options.phone.microphone
+        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.microphone
         root._pendingPort = conf.port || 4748
 
         // 1. Create null-sink & capture .monitor source name.
@@ -570,7 +570,7 @@ Singleton {
     function _decideAndLaunchAudio(): void {
         // If null-sink setup failed, _launchDroidcamAudio will surface
         // the error from `pulseSource` being empty.
-        const conf = Config.options.phone.microphone
+        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.microphone
 
         // Check if scrcpy is available — prefer it over droidcam.
         if (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable) {
@@ -678,7 +678,7 @@ Singleton {
                       "--audio-source=mic", "--audio-buffer=50"]
 
         // Wireless ADB if configured in the scrcpy settings page.
-        const scrcpyConf = Config.options.phone ? Config.options.phone.scrcpy : null
+        const scrcpyConf = ExtensionServices.get("phone-link", "KdeConnectService").config ? ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy : null
         const useWireless = scrcpyConf ? scrcpyConf.useWireless : false
         const wirelessIp = scrcpyConf ? (scrcpyConf.wirelessIp || "") : ""
         const wirelessPort = scrcpyConf ? (scrcpyConf.wirelessPort || "5555") : "5555"
@@ -940,7 +940,7 @@ Singleton {
 
     function setGain(percent: int): void {
         root.micGain = Math.max(0, Math.min(200, percent))
-        const conf = Config.options.phone.microphone
+        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.microphone
         conf.micGain = root.micGain
         if (root.running && root.pulseSource.length > 0) {
             gainProc.command = ["bash", "-c",
@@ -1048,7 +1048,7 @@ Singleton {
                 root._launchDroidcamAudio("usb", root._pendingPort, "")
             } else {
                 // USB not available — try the auto-detected Wi-Fi IP.
-                const conf = Config.options.phone.microphone
+                const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.microphone
                 const ip = root._resolveIp(conf)
                 if (!ip) {
                     root.connecting = false
@@ -1064,7 +1064,7 @@ Singleton {
     }
 
     function _applyInitialState(): void {
-        const conf = Config.options.phone.microphone
+        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.microphone
         // Mute
         root.muted = false // always start unmuted; user can toggle
         // Gain

@@ -338,10 +338,10 @@ ContentPage {
             buttonIcon: "volume_up"
             from: 0
             to: 200
-            value: Config.options.phone.microphone.micGain
+            value: ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.micGain
             usePercentTooltip: true
             onValueChanged: {
-                Config.options.phone.microphone.micGain = value
+                ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.micGain = value
                 ExtensionServices.get("phone-link", "PhoneMicService").setGain(value)
             }
             enabled: ExtensionServices.get("phone-link", "PhoneMicService").running
@@ -373,9 +373,9 @@ ContentPage {
         ConfigSwitch {
             buttonIcon: "noise_aware"
             text: Translation.tr("Noise suppression")
-            checked: Config.options.phone.microphone.noiseSuppression
+            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.noiseSuppression
             onCheckedChanged: {
-                Config.options.phone.microphone.noiseSuppression = checked
+                ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.noiseSuppression = checked
             }
             StyledToolTip {
                 text: Translation.tr("Reduces background noise from the microphone stream")
@@ -385,9 +385,9 @@ ContentPage {
         ConfigSwitch {
             buttonIcon: "record_voice_over"
             text: Translation.tr("Echo cancellation")
-            checked: Config.options.phone.microphone.echoCancellation
+            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.echoCancellation
             onCheckedChanged: {
-                Config.options.phone.microphone.echoCancellation = checked
+                ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.echoCancellation = checked
             }
             StyledToolTip {
                 text: Translation.tr("Cancels echo so speakers don't feed back into the mic")
@@ -397,9 +397,9 @@ ContentPage {
         ConfigSwitch {
             buttonIcon: "trending_up"
             text: Translation.tr("Auto gain control")
-            checked: Config.options.phone.microphone.autoGainControl
+            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.autoGainControl
             onCheckedChanged: {
-                Config.options.phone.microphone.autoGainControl = checked
+                ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.autoGainControl = checked
             }
             StyledToolTip {
                 text: Translation.tr("Automatically adjusts the input level based on signal volume")
@@ -450,18 +450,18 @@ ContentPage {
                 { displayName: Translation.tr("Wi-Fi"), icon: "wifi", value: "wifi" },
                 { displayName: Translation.tr("USB"), icon: "usb", value: "usb" }
             ]
-            currentValue: Config.options.phone.microphone.connection
-            onSelected: (v) => Config.options.phone.microphone.connection = v
+            currentValue: ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.connection
+            onSelected: (v) => ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.connection = v
         }
 
         ConfigTextField {
-            visible: Config.options.phone.microphone.connection === "wifi"
+            visible: ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.connection === "wifi"
             text: Translation.tr("Phone IP")
             icon: "ip"
             placeholderText: Translation.tr("Auto-detect from KDE Connect")
-            inputText: Config.options.phone.microphone.wifiIp
+            inputText: ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.wifiIp
             onEditingFinished: {
-                Config.options.phone.microphone.wifiIp = inputText.trim()
+                ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.wifiIp = inputText.trim()
             }
             tooltip: Translation.tr("Leave empty to auto-detect from KDE Connect")
         }
@@ -469,10 +469,10 @@ ContentPage {
         ConfigSpinBox {
             text: Translation.tr("Port")
             icon: "router"
-            value: Config.options.phone.microphone.port
+            value: ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.port
             from: 1024
             to: 65535
-            onValueChanged: Config.options.phone.microphone.port = value
+            onValueChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.port = value
         }
     }
 

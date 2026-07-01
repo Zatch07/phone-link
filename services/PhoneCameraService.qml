@@ -31,7 +31,7 @@ import Quickshell.Io
  *   • `lastError` — last failure reason (surfaced via errorOccurred).
  *
  * IP resolution priority:
- *   1. Config.options.phone.webcam.wifiIp (user override)
+ *   1. ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.wifiIp (user override)
  *   2. KDE Connect DBus property `org.kde.kdeconnect.device.reachableAddresses`
  *      (returns the IPs KDE Connect is currently using for the active device).
  */
@@ -421,7 +421,7 @@ Singleton {
     // ─── Public API ────────────────────────────────────────
 
     /**
-     * Starts the droidcam-cli video process using Config.options.phone.webcam.
+     * Starts the droidcam-cli video process using ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.
      * Idempotent — calling while already running/connecting is a no-op.
      *
      * Connection selection priority:
@@ -448,7 +448,7 @@ Singleton {
         root._userStopped = false
         root.stateChanged()
 
-        const conf = Config.options.phone.webcam
+        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.webcam
         const port = conf.port || 4747
 
         // Case 1: explicit USB preference — launch immediately.
@@ -478,7 +478,7 @@ Singleton {
      * onExited (case 3).
      */
     function _launchCameraProcess(mode: string, port: int, ip: string): void {
-        const conf = Config.options.phone.webcam
+        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.webcam
 
         // Build args using the CORRECT droidcam-cli 2.1.5 syntax (single-dash, =).
         const args = ["droidcam-cli", "-nocontrols"]
@@ -561,7 +561,7 @@ Singleton {
      * if the control is not available we restart the process with -hflip.
      */
     function toggleMirror(): void {
-        const conf = Config.options.phone.webcam
+        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.webcam
         conf.mirrorHorizontally = !conf.mirrorHorizontally
         if (root.running && root.videoDevice.length > 0) {
             // Try v4l2-ctl first — works on some v4l2loopback configs.
@@ -580,7 +580,7 @@ Singleton {
      * running (since 180° = -vflip -hflip and 90/270 need app-side rotation).
      */
     function setRotation(degrees: int): void {
-        const conf = Config.options.phone.webcam
+        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.webcam
         conf.rotateDegrees = degrees
         if (root.running || root.connecting) {
             root.stopCamera()
@@ -596,7 +596,7 @@ Singleton {
      * the DroidCam app on their phone and tap the camera flip button there.
      */
     function flipCamera(): void {
-        const conf = Config.options.phone.webcam
+        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.webcam
         conf.cameraFacing = (conf.cameraFacing === "front") ? "back" : "front"
         // Do NOT restart the connection — droidcam-cli can't toggle the
         // camera. The user needs to switch it in the DroidCam app on the
@@ -683,7 +683,7 @@ Singleton {
                 root._launchCameraProcess("usb", root._pendingPort, "")
             } else {
                 // USB not available — try the auto-detected Wi-Fi IP.
-                const conf = Config.options.phone.webcam
+                const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.webcam
                 const ip = root._resolveIp(conf)
                 if (!ip) {
                     root.connecting = false
@@ -704,7 +704,7 @@ Singleton {
 
     /**
      * Resolves the phone IP. Priority:
-     *   1. Config.options.phone.webcam.wifiIp (user override)
+     *   1. ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.wifiIp (user override)
      *   2. KDE Connect DBus property `reachableAddresses` (returns all IPs
      *      KDE Connect has seen for the device — first one wins).
      */

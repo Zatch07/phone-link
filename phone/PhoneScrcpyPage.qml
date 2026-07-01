@@ -338,8 +338,8 @@ ContentPage {
             from: 0
             to: 1920
             stepSize: 240
-            value: Config.options.phone.scrcpy.maxSize
-            onValueChanged: Config.options.phone.scrcpy.maxSize = value
+            value: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.maxSize
+            onValueChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.maxSize = value
             usePercentTooltip: false
         }
 
@@ -348,8 +348,8 @@ ContentPage {
             buttonIcon: "speed"
             from: 0
             to: 120
-            value: Config.options.phone.scrcpy.maxFps
-            onValueChanged: Config.options.phone.scrcpy.maxFps = value
+            value: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.maxFps
+            onValueChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.maxFps = value
             usePercentTooltip: false
         }
 
@@ -357,9 +357,9 @@ ContentPage {
             text: Translation.tr("Bitrate")
             icon: "network_check"
             placeholderText: "8M"
-            inputText: Config.options.phone.scrcpy.bitRate
+            inputText: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.bitRate
             onEditingFinished: {
-                Config.options.phone.scrcpy.bitRate = inputText.trim()
+                ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.bitRate = inputText.trim()
             }
         }
 
@@ -368,8 +368,8 @@ ContentPage {
             buttonIcon: "timer"
             from: 0
             to: 200
-            value: Config.options.phone.scrcpy.videoBuffer
-            onValueChanged: Config.options.phone.scrcpy.videoBuffer = value
+            value: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.videoBuffer
+            onValueChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.videoBuffer = value
             usePercentTooltip: false
         }
     }
@@ -382,57 +382,57 @@ ContentPage {
         ConfigSwitch {
             buttonIcon: "coffee"
             text: Translation.tr("Stay awake")
-            checked: Config.options.phone.scrcpy.stayAwake
-            onCheckedChanged: Config.options.phone.scrcpy.stayAwake = checked
+            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.stayAwake
+            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.stayAwake = checked
         }
 
         ConfigSwitch {
             buttonIcon: "phone_android"
             text: Translation.tr("Turn screen off")
-            checked: Config.options.phone.scrcpy.turnScreenOff
-            onCheckedChanged: Config.options.phone.scrcpy.turnScreenOff = checked
+            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.turnScreenOff
+            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.turnScreenOff = checked
         }
 
         ConfigSwitch {
             buttonIcon: "power_off"
             text: Translation.tr("No power on")
-            checked: Config.options.phone.scrcpy.noPowerOn
-            onCheckedChanged: Config.options.phone.scrcpy.noPowerOn = checked
+            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.noPowerOn
+            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.noPowerOn = checked
         }
 
         ConfigSwitch {
             buttonIcon: "volume_off"
             text: Translation.tr("No audio")
-            checked: Config.options.phone.scrcpy.noAudio
-            onCheckedChanged: Config.options.phone.scrcpy.noAudio = checked
+            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.noAudio
+            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.noAudio = checked
         }
 
         ConfigSwitch {
             buttonIcon: "touch_app"
             text: Translation.tr("Show touches")
-            checked: Config.options.phone.scrcpy.showTouches
-            onCheckedChanged: Config.options.phone.scrcpy.showTouches = checked
+            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.showTouches
+            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.showTouches = checked
         }
 
         ConfigSwitch {
             buttonIcon: "fullscreen"
             text: Translation.tr("Fullscreen")
-            checked: Config.options.phone.scrcpy.fullscreen
-            onCheckedChanged: Config.options.phone.scrcpy.fullscreen = checked
+            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.fullscreen
+            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.fullscreen = checked
         }
 
         ConfigSwitch {
             buttonIcon: "push_pin"
             text: Translation.tr("Always on top")
-            checked: Config.options.phone.scrcpy.alwaysOnTop
-            onCheckedChanged: Config.options.phone.scrcpy.alwaysOnTop = checked
+            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.alwaysOnTop
+            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.alwaysOnTop = checked
         }
 
         ConfigSwitch {
             buttonIcon: "terminal"
             text: Translation.tr("Show terminal")
-            checked: Config.options.phone.scrcpy.showTerminal
-            onCheckedChanged: Config.options.phone.scrcpy.showTerminal = checked
+            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.showTerminal
+            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.showTerminal = checked
         }
     }
 
@@ -529,31 +529,31 @@ ContentPage {
         ConfigSwitch {
             buttonIcon: "wifi"
             text: Translation.tr("Use wireless ADB")
-            checked: Config.options.phone.scrcpy.useWireless
-            onCheckedChanged: Config.options.phone.scrcpy.useWireless = checked
+            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.useWireless
+            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.useWireless = checked
         }
 
         ConfigTextField {
-            visible: Config.options.phone.scrcpy.useWireless
+            visible: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.useWireless
             text: Translation.tr("Phone IP")
             icon: "ip"
             placeholderText: "192.168.1.42"
-            inputText: Config.options.phone.scrcpy.wirelessIp
+            inputText: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.wirelessIp
             onEditingFinished: {
-                Config.options.phone.scrcpy.wirelessIp = inputText.trim()
+                ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.wirelessIp = inputText.trim()
             }
         }
 
         ConfigSpinBox {
-            visible: Config.options.phone.scrcpy.useWireless
+            visible: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.useWireless
             text: Translation.tr("Port")
             icon: "router"
-            value: Config.options.phone.scrcpy.wirelessPort
-                    ? parseInt(Config.options.phone.scrcpy.wirelessPort, 10)
+            value: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.wirelessPort
+                    ? parseInt(ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.wirelessPort, 10)
                     : 5555
             from: 1024
             to: 65535
-            onValueChanged: Config.options.phone.scrcpy.wirelessPort = String(value)
+            onValueChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.wirelessPort = String(value)
         }
     }
 

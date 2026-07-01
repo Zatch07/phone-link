@@ -332,7 +332,7 @@ ContentPage {
                     }
                     StyledText {
                         Layout.alignment: Qt.AlignVCenter
-                        text: Config.options.phone.webcam.mirrorHorizontally
+                        text: ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.mirrorHorizontally
                             ? Translation.tr("Unmirror")
                             : Translation.tr("Mirror")
                         font.pixelSize: Appearance.font.pixelSize.small
@@ -399,9 +399,9 @@ ContentPage {
                 { displayName: Translation.tr("Front"), icon: "camera_front", value: "front" },
                 { displayName: Translation.tr("Back"), icon: "camera_rear", value: "back" }
             ]
-            currentValue: Config.options.phone.webcam.cameraFacing
+            currentValue: ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.cameraFacing
             onSelected: (v) => {
-                Config.options.phone.webcam.cameraFacing = v
+                ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.cameraFacing = v
                 // DroidCam does not have a CLI flag to switch cameras.
                 // Persist the preference so the next fresh start uses it,
                 // but do NOT restart the running stream.
@@ -418,8 +418,8 @@ ContentPage {
                 { displayName: Translation.tr("Wi-Fi"), icon: "wifi", value: "wifi" },
                 { displayName: Translation.tr("USB"), icon: "usb", value: "usb" }
             ]
-            currentValue: Config.options.phone.webcam.connection
-            onSelected: (v) => Config.options.phone.webcam.connection = v
+            currentValue: ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.connection
+            onSelected: (v) => ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.connection = v
         }
 
         // Resolution
@@ -431,17 +431,17 @@ ContentPage {
                 { displayName: "720p", value: "1280x720" },
                 { displayName: "1080p", value: "1920x1080" }
             ]
-            currentValue: Config.options.phone.webcam.resolution
-            onSelected: (v) => Config.options.phone.webcam.resolution = v
+            currentValue: ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.resolution
+            onSelected: (v) => ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.resolution = v
         }
 
         // Mirror toggle
         ConfigSwitch {
             buttonIcon: "flip"
             text: Translation.tr("Mirror horizontally")
-            checked: Config.options.phone.webcam.mirrorHorizontally
+            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.mirrorHorizontally
             onCheckedChanged: {
-                Config.options.phone.webcam.mirrorHorizontally = checked
+                ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.mirrorHorizontally = checked
             }
         }
 
@@ -455,7 +455,7 @@ ContentPage {
                 { displayName: "180°", value: 180 },
                 { displayName: "270°", value: 270 }
             ]
-            currentValue: Config.options.phone.webcam.rotateDegrees
+            currentValue: ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.rotateDegrees
             onSelected: (v) => ExtensionServices.get("phone-link", "PhoneCameraService").setRotation(v)
         }
     }
@@ -464,15 +464,15 @@ ContentPage {
     ContentSection {
         icon: "wifi"
         title: Translation.tr("Connection")
-        visible: Config.options.phone.webcam.connection === "wifi"
+        visible: ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.connection === "wifi"
 
         ConfigTextField {
             text: Translation.tr("Phone IP")
             icon: "ip"
             placeholderText: Translation.tr("Auto-detect from KDE Connect")
-            inputText: Config.options.phone.webcam.wifiIp
+            inputText: ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.wifiIp
             onEditingFinished: {
-                Config.options.phone.webcam.wifiIp = inputText.trim()
+                ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.wifiIp = inputText.trim()
             }
             tooltip: Translation.tr("Leave empty to auto-detect from KDE Connect. Set explicitly if auto-detect fails.")
         }
@@ -480,10 +480,10 @@ ContentPage {
         ConfigSpinBox {
             text: Translation.tr("Port")
             icon: "router"
-            value: Config.options.phone.webcam.port
+            value: ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.port
             from: 1024
             to: 65535
-            onValueChanged: Config.options.phone.webcam.port = value
+            onValueChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.port = value
         }
     }
 
@@ -497,8 +497,8 @@ ContentPage {
             buttonIcon: "speed"
             from: 10
             to: 60
-            value: Config.options.phone.webcam.fps
-            onValueChanged: Config.options.phone.webcam.fps = value
+            value: ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.fps
+            onValueChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.fps = value
             usePercentTooltip: false
         }
     }
