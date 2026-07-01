@@ -1,7 +1,7 @@
 {
   "extensionId": "phone-link",
   "name": "Phone Link",
-  "description": "Phone integration using KDE Connect, scrcpy, and DroidCam.",
+  "description": "Phone integration using KDE Connect, scrcpy, and DroidCam. Use the readme from the github (https://github.com/Zatch07/phone-link) to install dependencies.",
   "version": "1.1.0",
   "author": "Zatch07",
   "icon": "smartphone",
