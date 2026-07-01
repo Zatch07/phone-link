@@ -1,0 +1,18 @@
+{
+  "id": "phone-link",
+  "name": "Phone Link",
+  "version": "1.0.0",
+  "description": "Phone integration using KDE Connect, scrcpy, and DroidCam.",
+  "author": "Antigravity",
+  "main": "phone/Phone.qml",
+  "contributions": {
+    "sidebarLeftPages": [
+      {
+        "id": "phone",
+        "name": "Phone",
+        "icon": "smartphone",
+        "page": "phone/Phone.qml"
+      }
+    ]
+  }
+}
