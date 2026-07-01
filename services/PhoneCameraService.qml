@@ -35,11 +35,6 @@ import Quickshell.Io
  *      (returns the IPs KDE Connect is currently using for the active device).
  */
 Singleton {
-
-    QtObject {
-        id: Translation
-        function tr(text) { return qsTr(text); }
-    }
     id: root
 
     // ─── Public state ───────────────────────────────────────
@@ -142,32 +137,32 @@ Singleton {
         if (!root.droidcamCliPresent)
             deps.push({
                 key: "droidcam-cli",
-                name: Translation.tr("DroidCam CLI"),
-                description: Translation.tr("Connects to the DroidCam app on your phone and streams video to /dev/videoN"),
+                name: qsTr("DroidCam CLI"),
+                description: qsTr("Connects to the DroidCam app on your phone and streams video to /dev/videoN"),
                 present: false,
                 installCommands: _droidcamInstallCommands
             })
         if (!root.v4l2loopbackLoaded)
             deps.push({
                 key: "v4l2loopback",
-                name: Translation.tr("v4l2loopback kernel module"),
-                description: Translation.tr("Creates virtual /dev/videoN devices that DroidCam writes to. Without it, droidcam-cli has nowhere to stream."),
+                name: qsTr("v4l2loopback kernel module"),
+                description: qsTr("Creates virtual /dev/videoN devices that DroidCam writes to. Without it, droidcam-cli has nowhere to stream."),
                 present: false,
                 installCommands: _v4l2loopbackInstallCommands
             })
         if (!root.v4lUtilsPresent)
             deps.push({
                 key: "v4l-utils",
-                name: Translation.tr("v4l-utils (v4l2-ctl)"),
-                description: Translation.tr("Recommended for device detection and live mirror/flip controls"),
+                name: qsTr("v4l-utils (v4l2-ctl)"),
+                description: qsTr("Recommended for device detection and live mirror/flip controls"),
                 present: false,
                 installCommands: _v4lUtilsInstallCommands
             })
         if (!root.mpvPresent)
             deps.push({
                 key: "mpv",
-                name: Translation.tr("mpv (optional)"),
-                description: Translation.tr("Recommended for the webcam preview window. Falls back to ffplay/vlc if absent."),
+                name: qsTr("mpv (optional)"),
+                description: qsTr("Recommended for the webcam preview window. Falls back to ffplay/vlc if absent."),
                 present: false,
                 installCommands: _mpvInstallCommands
             })

@@ -50,11 +50,6 @@ import Quickshell.Io
  * 100% userspace — no kernel modules, robust across NVIDIA/AMD/Intel.
  */
 Singleton {
-
-    QtObject {
-        id: Translation
-        function tr(text) { return qsTr(text); }
-    }
     id: root
 
     // ─── Public state ───────────────────────────────────────
@@ -238,8 +233,8 @@ Singleton {
         if (!root.pactlPresent)
             deps.push({
                 key: "pactl",
-                name: Translation.tr("pactl (PulseAudio/PipeWire CLI)"),
-                description: Translation.tr("Required for audio routing — creates a virtual null-sink that turns the phone mic stream into a recordable source."),
+                name: qsTr("pactl (PulseAudio/PipeWire CLI)"),
+                description: qsTr("Required for audio routing — creates a virtual null-sink that turns the phone mic stream into a recordable source."),
                 present: false,
                 installCommands: ({
                     arch: "sudo pacman -S pulseaudio-utils",
@@ -250,8 +245,8 @@ Singleton {
         if (!root.scrcpyPresent && !root.droidcamCliPresent)
             deps.push({
                 key: "audio-backend",
-                name: Translation.tr("scrcpy or DroidCam CLI"),
-                description: Translation.tr("At least one audio backend is needed. scrcpy is preferred (no extra app on phone). DroidCam CLI is the fallback."),
+                name: qsTr("scrcpy or DroidCam CLI"),
+                description: qsTr("At least one audio backend is needed. scrcpy is preferred (no extra app on phone). DroidCam CLI is the fallback."),
                 present: false,
                 installCommands: ({
                     arch: "# Option 1 (preferred):\nsudo pacman -S scrcpy\n# Option 2:\nyay -S droidcam",

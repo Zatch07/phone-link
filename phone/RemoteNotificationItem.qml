@@ -126,8 +126,8 @@ Item {
         preventStealing: true
         automaticallyReset: false
         acceptedButtons: Qt.LeftButton | Qt.MiddleButton
-        minimumX: -Infinity
-        maximumX: Infinity
+        
+        
         onClicked: mouse => {
             // Suppress click if a drag actually happened during this press
             // cycle — without this, a slow swipe-to-dismiss on an expanded

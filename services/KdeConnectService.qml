@@ -22,11 +22,6 @@ import Quickshell.Io
  * selected automatically.
  */
 Singleton {
-
-    QtObject {
-        id: Translation
-        function tr(text) { return qsTr(text); }
-    }
     id: root
 
     property bool available: false
@@ -120,7 +115,7 @@ Singleton {
     readonly property var groupsByAppName: {
         const groups = {}
         notifications.forEach(n => {
-            const key = n.appName || n.summary || Translation.tr("Unknown")
+            const key = n.appName || n.summary || qsTr("Unknown")
             if (!groups[key]) {
                 groups[key] = {
                     appName: key,
@@ -258,7 +253,7 @@ Singleton {
                 // KDE Connect is the backbone of the entire Phone tab.
                 // If it's missing, warn the user immediately.
                 root.criticalDepMissing("kdeconnect-cli",
-                    Translation.tr("KDE Connect is not installed — phone integration requires it"))
+                    qsTr("KDE Connect is not installed — phone integration requires it"))
             }
         }
     }
@@ -284,8 +279,8 @@ Singleton {
         if (!root._scrcpyAvailable)
             deps.push({
                 key: "scrcpy",
-                name: Translation.tr("scrcpy"),
-                description: Translation.tr("Mirrors your phone screen in a floating SDL window. The main binary for screen mirroring."),
+                name: qsTr("scrcpy"),
+                description: qsTr("Mirrors your phone screen in a floating SDL window. The main binary for screen mirroring."),
                 present: false,
                 installCommands: ({
                     arch: "sudo pacman -S scrcpy",
@@ -296,8 +291,8 @@ Singleton {
         if (!root.adbPresent)
             deps.push({
                 key: "android-tools",
-                name: Translation.tr("android-tools (adb)"),
-                description: Translation.tr("Required for USB connection, quick actions (screenshot, power button) and opening apps from notifications."),
+                name: qsTr("android-tools (adb)"),
+                description: qsTr("Required for USB connection, quick actions (screenshot, power button) and opening apps from notifications."),
                 present: false,
                 installCommands: ({
                     arch: "sudo pacman -S android-tools",
@@ -714,7 +709,7 @@ Singleton {
                     label: a.label ?? a.text ?? "",
                 })),
                 replyId: n.replyId ?? "",
-                replyPlaceholder: n.replyPlaceholder ?? Translation.tr("Reply"),
+                replyPlaceholder: n.replyPlaceholder ?? qsTr("Reply"),
                 package: n.package ?? "",
             }
         })
@@ -849,7 +844,7 @@ Singleton {
         // updated body (e.g. "You: hi") replaces the old one reliably.
         replyRefreshTimer.publicId = publicId
         replyRefreshTimer.restart()
-        root.actionFeedback(Translation.tr("Reply sent"), true)
+        root.actionFeedback(qsTr("Reply sent"), true)
     }
 
     Timer {
@@ -902,7 +897,7 @@ Singleton {
             ">/dev/null 2>&1 || true"
         ])
         root._removePairingRequest(devId)
-        root.actionFeedback(Translation.tr("Pairing accepted"), true)
+        root.actionFeedback(qsTr("Pairing accepted"), true)
     }
 
     /** Cancels/declines an incoming pair request (daemon method
@@ -916,7 +911,7 @@ Singleton {
             ">/dev/null 2>&1 || true"
         ])
         root._removePairingRequest(devId)
-        root.actionFeedback(Translation.tr("Pairing declined"), false)
+        root.actionFeedback(qsTr("Pairing declined"), false)
     }
 
     /** Restarts the KDE Connect DBus monitor process. This triggers a fresh
@@ -925,7 +920,7 @@ Singleton {
         monitorProc.running = false
         root.ready = false
         Qt.callLater(() => root.startMonitor())
-        root.actionFeedback(Translation.tr("Refreshing devices…"), true)
+        root.actionFeedback(qsTr("Refreshing devices…"), true)
     }
 
     function mountSftp(devId) {
@@ -1018,7 +1013,7 @@ Singleton {
         if (!notif) return
 
         const pkg = notif.package || ""
-        const appName = notif.appName || notif.summary || Translation.tr("the app")
+        const appName = notif.appName || notif.summary || qsTr("the app")
 
         // Step 1: Always launch scrcpy so the user can see the phone screen.
         root.launchScrcpy(root.activeDeviceId)
@@ -1026,7 +1021,7 @@ Singleton {
         // Step 2: If we have a package, open the app via ADB.
         if (!pkg) {
             root.actionFeedback(
-                Translation.tr("Opening scrcpy - tap the app on the mirrored screen"),
+                qsTr("Opening scrcpy - tap the app on the mirrored screen"),
                 true)
             return
         }
@@ -1045,13 +1040,13 @@ Singleton {
         cmd += "adb shell monkey -p " + root._shellQuote(pkg) +
                " -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1"
         cmd += " && notify-send -i smartphone 'ii' " +
-               root._shellQuote(Translation.tr("Opened %1 on phone").arg(appName)) +
+               root._shellQuote(qsTr("Opened %1 on phone").arg(appName)) +
                " || notify-send -i smartphone 'ii' " +
-               root._shellQuote(Translation.tr("Could not open %1 - ADB unreachable").arg(appName))
+               root._shellQuote(qsTr("Could not open %1 - ADB unreachable").arg(appName))
 
         Quickshell.execDetached(["bash", "-c", cmd])
         root.actionFeedback(
-            Translation.tr("Opening scrcpy + %1...").arg(appName),
+            qsTr("Opening scrcpy + %1...").arg(appName),
             true)
     }
 
@@ -1079,7 +1074,7 @@ Singleton {
             "  notify-send -i smartphone 'ii' 'ADB was not reachable'; " +
             "fi"
         ])
-        root.actionFeedback(Translation.tr("Screenshotting phone…"), true)
+        root.actionFeedback(qsTr("Screenshotting phone…"), true)
     }
 
     /** Enables TCP/IP mode on a USB-connected device so it can later be
@@ -1091,17 +1086,17 @@ Singleton {
             "   adb get-state 2>/dev/null | grep -q device; then " +
             "  if adb tcpip 5555 >/dev/null 2>&1; then " +
             "    notify-send -i smartphone 'ii' " +
-            "      '" + Translation.tr("Wireless ADB enabled on port 5555") + "'; " +
+            "      '" + qsTr("Wireless ADB enabled on port 5555") + "'; " +
             "  else " +
             "    notify-send -i smartphone 'ii' " +
-            "      '" + Translation.tr("Could not enable wireless ADB") + "'; " +
+            "      '" + qsTr("Could not enable wireless ADB") + "'; " +
             "  fi; " +
             "else " +
             "  notify-send -i smartphone 'ii' " +
-            "    '" + Translation.tr("ADB not connected via USB") + "'; " +
+            "    '" + qsTr("ADB not connected via USB") + "'; " +
             "fi"
         ])
-        root.actionFeedback(Translation.tr("Enabling wireless ADB…"), true)
+        root.actionFeedback(qsTr("Enabling wireless ADB…"), true)
     }
 
     /** Toggles phone screen power. Uses `adb shell input keyevent 26`
@@ -1110,7 +1105,7 @@ Singleton {
         Quickshell.execDetached(["bash", "-c",
             "adb shell input keyevent 26 >/dev/null 2>&1 || " +
             "notify-send -i smartphone 'ii' 'Could not toggle power on phone'"])
-        root.actionFeedback(Translation.tr("Toggled phone power"), true)
+        root.actionFeedback(qsTr("Toggled phone power"), true)
     }
 
     /** Adjusts phone media volume via ADB. direction: +1 = up, -1 = down. */
