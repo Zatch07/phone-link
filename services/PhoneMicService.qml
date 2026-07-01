@@ -678,7 +678,7 @@ Singleton {
                       "--audio-source=mic", "--audio-buffer=50"]
 
         // Wireless ADB if configured in the scrcpy settings page.
-        const scrcpyConf = ExtensionServices.get("phone-link", "KdeConnectService").config ? ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy : null
+        const scrcpyConf = ExtensionServices.get("phone-link", "KdeConnectService") && ExtensionServices.get("phone-link", "KdeConnectService").config ? ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy : null
         const useWireless = scrcpyConf ? scrcpyConf.useWireless : false
         const wirelessIp = scrcpyConf ? (scrcpyConf.wirelessIp || "") : ""
         const wirelessPort = scrcpyConf ? (scrcpyConf.wirelessPort || "5555") : "5555"

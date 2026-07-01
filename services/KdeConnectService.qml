@@ -114,7 +114,7 @@ Singleton {
     property int scrcpyElapsedMs: 0
 
     /** True if `adb` is reachable on the active device (either wireless ADB
-     *  via ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.useWireless + configured IP, or via
+     *  via root.config.scrcpy.useWireless + configured IP, or via
      *  a USB-attached device). Cached for 30s — used to enable ADB-only
      *  quick actions (screenshot, power key, volume, am start). */
     property bool adbReachable: false
@@ -1001,8 +1001,8 @@ Singleton {
         running: false
         command: ["bash", "-c",
             "if command -v adb >/dev/null 2>&1; then " +
-            "  IP=" + root._shellQuote((ExtensionServices.get("phone-link", "KdeConnectService").config && ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy)
-                                      ? (ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.wirelessIp || "")
+            "  IP=" + root._shellQuote((root.config && root.config.scrcpy)
+                                      ? (root.config.scrcpy.wirelessIp || "")
                                       : "") + "; " +
             "  if [ -n \"$IP\" ]; then " +
             "    adb connect \"$IP\" 2>/dev/null; " +
@@ -1064,7 +1064,7 @@ Singleton {
             return
         }
 
-        const scrcpyConf = ExtensionServices.get("phone-link", "KdeConnectService").config ? ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy : null
+        const scrcpyConf = root.config ? root.config.scrcpy : null
         const useWireless = scrcpyConf ? scrcpyConf.useWireless : false
         const wirelessIp = scrcpyConf ? (scrcpyConf.wirelessIp || "") : ""
         const wirelessPort = scrcpyConf ? (scrcpyConf.wirelessPort || "5555") : "5555"
@@ -1280,10 +1280,10 @@ Singleton {
                 }
                 
                 if (ip !== "") {
-                    if (ExtensionServices.get("phone-link", "KdeConnectService").config && ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy) {
-                        ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.wirelessIp = ip
-                        ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.wirelessPort = port
-                        ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.useWireless = true
+                    if (root.config && root.config.scrcpy) {
+                        root.config.scrcpy.wirelessIp = ip
+                        root.config.scrcpy.wirelessPort = port
+                        root.config.scrcpy.useWireless = true
                     }
                     root.launchScrcpy(root._wirelessPromptDevId, "wireless")
                 }
@@ -1340,8 +1340,8 @@ Singleton {
         let wirelessPort = "5555"
         let showTerminal = false
 
-        if (ExtensionServices.get("phone-link", "KdeConnectService").config && ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy) {
-            const scrcpyConf = ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy
+        if (root.config && root.config.scrcpy) {
+            const scrcpyConf = root.config.scrcpy
             stayAwake = scrcpyConf.stayAwake
             turnScreenOff = scrcpyConf.turnScreenOff
             noPowerOn = scrcpyConf.noPowerOn

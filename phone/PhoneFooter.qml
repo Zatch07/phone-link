@@ -40,15 +40,15 @@ Item {
 
     implicitHeight: visible ? footerColumn.implicitHeight : 0
     height: visible ? implicitHeight : 0
-    visible: ExtensionServices.get("phone-link", "KdeConnectService").config.showPeripheralCards
+    visible: true
 
     signal requestOpenSubPage(url target)
 
-    readonly property bool _scrcpyPresent: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable
-    readonly property bool _droidcamPresent: ExtensionServices.get("phone-link", "PhoneCameraService").available
-    readonly property bool _micPresent: ExtensionServices.get("phone-link", "PhoneMicService").available
+    readonly property bool _scrcpyPresent: ExtensionServices.get("phone-link", "KdeConnectService") ? ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable : false
+    readonly property bool _droidcamPresent: ExtensionServices.get("phone-link", "PhoneCameraService") ? ExtensionServices.get("phone-link", "PhoneCameraService").available : false
+    readonly property bool _micPresent: ExtensionServices.get("phone-link", "PhoneMicService") ? ExtensionServices.get("phone-link", "PhoneMicService").available : false
 
-    readonly property bool _deviceOnline: ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
+    readonly property bool _deviceOnline: ExtensionServices.get("phone-link", "KdeConnectService") ? ExtensionServices.get("phone-link", "KdeConnectService").activeReachable : false
 
     // ─── Install guide popup state ─────────────────────────
     // When visible, shows a floating overlay listing missing dependencies

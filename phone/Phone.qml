@@ -40,12 +40,13 @@ Item {
     // the main content is shown.
     property url activeSubPage: ""
 
-    readonly property bool emptyStateVisible: !ExtensionServices.get("phone-link", "KdeConnectService").available
-                                               || (ExtensionServices.get("phone-link", "KdeConnectService").hasDevices
-                                                   && ExtensionServices.get("phone-link", "KdeConnectService").devices
+    readonly property var _kdc: ExtensionServices.get("phone-link", "KdeConnectService")
+    readonly property bool emptyStateVisible: !_kdc || !_kdc.available
+                                               || (_kdc.hasDevices
+                                                   && _kdc.devices
                                                           .filter(d => d.reachable && d.paired)
                                                           .length === 0)
-                                               || !ExtensionServices.get("phone-link", "KdeConnectService").hasDevices
+                                               || !_kdc.hasDevices
 
 
     function openSubPage(url: url): void {
