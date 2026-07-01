@@ -95,9 +95,17 @@ Singleton {
             property string cameraFacing: "back"
         }
 
+        Timer {
+            id: setupReadyTimer
+            interval: 1500
+            running: true
+            onTriggered: root._readyForSetup = true
+        }
+        property bool _readyForSetup: false
+
         property bool runSetupScript: typeof ExtensionManager !== "undefined" ? (ExtensionManager.extensionConfigs["phone-link"]?.run_setup_script ?? false) : false
         onRunSetupScriptChanged: {
-            if (runSetupScript && typeof ExtensionManager !== "undefined") {
+            if (root._readyForSetup && runSetupScript && typeof ExtensionManager !== "undefined") {
                 Quickshell.execDetached(["kitty", "--", "bash", "-c", "cd ~/.config/illogical-impulse/extensions/installed/phone-link && ./install_dependencies.sh; echo ''; read -p 'Press Enter to exit'"])
             }
         }
