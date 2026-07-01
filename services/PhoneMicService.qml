@@ -50,6 +50,11 @@ import Quickshell.Io
  * 100% userspace — no kernel modules, robust across NVIDIA/AMD/Intel.
  */
 Singleton {
+
+    QtObject {
+        id: Translation
+        function tr(text) { return qsTr(text); }
+    }
     id: root
 
     // ─── Public state ───────────────────────────────────────

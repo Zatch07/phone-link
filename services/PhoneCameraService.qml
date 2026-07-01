@@ -35,6 +35,11 @@ import Quickshell.Io
  *      (returns the IPs KDE Connect is currently using for the active device).
  */
 Singleton {
+
+    QtObject {
+        id: Translation
+        function tr(text) { return qsTr(text); }
+    }
     id: root
 
     // ─── Public state ───────────────────────────────────────

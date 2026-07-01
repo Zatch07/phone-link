@@ -22,6 +22,11 @@ import Quickshell.Io
  * selected automatically.
  */
 Singleton {
+
+    QtObject {
+        id: Translation
+        function tr(text) { return qsTr(text); }
+    }
     id: root
 
     property bool available: false
