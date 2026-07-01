@@ -110,8 +110,8 @@ Singleton {
         onTriggered: root.elapsedMs += 1000
     }
 
-    readonly property string _setupScriptPath: Directories.scriptPath + "/phone/setup_droidcam_input.sh"
-    readonly property string _teardownScriptPath: Directories.scriptPath + "/phone/teardown_droidcam_input.sh"
+    readonly property string _setupScriptPath: FileUtils.trimFileProtocol(Qt.resolvedUrl("../scripts/phone/setup_droidcam_input.sh"))
+    readonly property string _teardownScriptPath: FileUtils.trimFileProtocol(Qt.resolvedUrl("../scripts/phone/teardown_droidcam_input.sh"))
 
     // Which backend is currently active: "scrcpy" or "droidcam".
     // scrcpy is preferred because it doesn't require a separate app on the

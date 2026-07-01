@@ -2,8 +2,8 @@
   "extensionId": "phone-link",
   "name": "Phone Link",
   "description": "Phone integration using KDE Connect, scrcpy, and DroidCam.",
-  "version": "1.0.0",
-  "author": "Antigravity",
+  "version": "1.1.0",
+  "author": "Zatch07",
   "icon": "smartphone",
   "shapeString": "Cookie9Sided",
   "contributes": {

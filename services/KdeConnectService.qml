@@ -164,8 +164,8 @@ Singleton {
     property int _previousBattery: -1
     property bool _lowBatteryNotified: false
 
-    readonly property string _scriptPath: Directories.scriptPath + "/kdeconnect/monitor.py"
-    readonly property string _fetchNotifsScriptPath: Directories.scriptPath + "/kdeconnect/fetch_notifications.py"
+    readonly property string _scriptPath: FileUtils.trimFileProtocol(Qt.resolvedUrl("../scripts/kdeconnect/monitor.py"))
+    readonly property string _fetchNotifsScriptPath: FileUtils.trimFileProtocol(Qt.resolvedUrl("../scripts/kdeconnect/fetch_notifications.py"))
 
     IpcHandler {
         target: "kdeconnect"
