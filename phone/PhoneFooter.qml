@@ -4,7 +4,6 @@
 // The detailLine binding shows elapsed time and connection info when active.
 // Backed by ExtensionServices.get("phone-link", "KdeConnectService"), ExtensionServices.get("phone-link", "PhoneCameraService") and ExtensionServices.get("phone-link", "PhoneMicService") singletons.
 
-pragma ComponentBehavior: Bound
 
 // Performance fix: multi-arg .arg() doesn't work in this Qt/Quickshell version
 // Use chained .arg(x).arg(y) instead.

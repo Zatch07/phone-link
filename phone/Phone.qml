@@ -1,5 +1,3 @@
-pragma ComponentBehavior: Bound
-
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -34,6 +32,7 @@ import qs.services
  */
 Item {
     id: root
+    anchors.fill: parent
 
     // ─── Sub-page navigation (Hub-and-spoke pattern) ─────
     // Mirrors CoreServicesConfig.qml: activeSubPage holds the URL of the
