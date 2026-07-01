@@ -83,7 +83,7 @@ Singleton {
             property string connection: "usb"
             property string wifiIp: ""
             property int port: 4747
-            property string resolution: "720p"
+            property string resolution: "1280x720"
             property int fps: 30
             property bool mirrorHorizontally: false
             property int rotateDegrees: 0
