@@ -1,6 +1,7 @@
 import qs.modules.common
 import qs.modules.common.functions
 import qs
+import qs.services
 import QtQuick
 import Quickshell
 import Quickshell.Io
@@ -169,29 +170,29 @@ Singleton {
         target: "kdeconnect"
 
         function status(): string {
-            const dev = KdeConnectService.activeDevice
+            const dev = root.activeDevice
             return JSON.stringify({
-                available: KdeConnectService.available,
-                ready: KdeConnectService.ready,
+                available: root.available,
+                ready: root.ready,
                 persistentReady: Persistent.ready,
                 persistedActiveDeviceId: (Persistent.states.sidebar
                                             && Persistent.states.sidebar.policies
                                             && Persistent.states.sidebar.policies.phone)
                                         ? Persistent.states.sidebar.policies.phone.activeDeviceId
                                         : "(null-phone)",
-                scrcpyAvailable: KdeConnectService.scrcpyAvailable,
-                devicesCount: KdeConnectService.devices.length,
-                activeDeviceId: KdeConnectService.activeDeviceId,
-                activeReachable: KdeConnectService.activeReachable,
+                scrcpyAvailable: root.scrcpyAvailable,
+                devicesCount: root.devices.length,
+                activeDeviceId: root.activeDeviceId,
+                activeReachable: root.activeReachable,
                 activeName: dev ? dev.name : "(none)",
                 activeBattery: dev ? dev.charge : -1,
-                notificationsCount: KdeConnectService.notificationCount,
+                notificationsCount: root.notificationCount,
                 monitorRunning: monitorProc.running,
             })
         }
 
         function ping(devId: string): void {
-            KdeConnectService.sendPing(devId || KdeConnectService.activeDeviceId, "ping via ipc")
+            root.sendPing(devId || root.activeDeviceId, "ping via ipc")
         }
     }
 
@@ -513,8 +514,8 @@ Singleton {
         if (id === root.activeDeviceId
             && prev.reachable === true
             && merged.reachable === false) {
-            const anyFeatureRunning = PhoneCameraService.running
-                || PhoneMicService.running
+            const anyFeatureRunning = ExtensionServices.get("phone-link", "PhoneCameraService").running
+                || ExtensionServices.get("phone-link", "PhoneMicService").running
                 || root.scrcpyRunning
             if (anyFeatureRunning) {
                 root.activeDeviceLostDuringUse(id)
@@ -586,7 +587,7 @@ Singleton {
     }
 
     function _feedback(message, ok) {
-        KdeConnectService.dispatchActionFeedback(message, ok)
+        root.dispatchActionFeedback(message, ok)
     }
 
     function dispatchActionFeedback(message, ok) {

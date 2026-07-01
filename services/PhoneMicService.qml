@@ -1,6 +1,7 @@
 import qs.modules.common
 import qs.modules.common.functions
 import qs
+import qs.services
 import QtQuick
 import Quickshell
 import Quickshell.Io
@@ -136,7 +137,7 @@ Singleton {
         })
     }
 
-    // Mirror KdeConnectService._enabled: stays dormant when Phone tab is off.
+    // Mirror ExtensionServices.get("phone-link", "KdeConnectService")._enabled: stays dormant when Phone tab is off.
     readonly property bool _enabled: Config.options.policies.phone !== 0
 
     on_EnabledChanged: {
@@ -489,7 +490,7 @@ Singleton {
      */
     function startMic(): void {
         if (!root.available || root.running || root.connecting) return
-        if (!KdeConnectService.activeReachable) {
+        if (!ExtensionServices.get("phone-link", "KdeConnectService").activeReachable) {
             root.lastError = "No reachable KDE Connect device — pair a device first"
             root.errorOccurred(root.lastError)
             return
@@ -572,7 +573,7 @@ Singleton {
         const conf = Config.options.phone.microphone
 
         // Check if scrcpy is available — prefer it over droidcam.
-        if (KdeConnectService.scrcpyAvailable) {
+        if (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable) {
             root._backend = "scrcpy"
             root._launchScrcpyMic()
             return
@@ -1035,8 +1036,8 @@ Singleton {
             "else exit 1; fi"]
         onExited: (code, status) => {
             const now = (code === 0)
-            if (now !== KdeConnectService.adbReachable) {
-                KdeConnectService.adbReachable = now
+            if (now !== ExtensionServices.get("phone-link", "KdeConnectService").adbReachable) {
+                ExtensionServices.get("phone-link", "KdeConnectService").adbReachable = now
             }
             if (!usbProbeForStartup._oneShot) return
             usbProbeForStartup._oneShot = false
@@ -1102,7 +1103,7 @@ Singleton {
     }
 
     function _fetchDeviceIp(): void {
-        const devId = KdeConnectService.activeDeviceId
+        const devId = ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId
         if (!devId) {
             root._lastKnownIp = ""
             return
@@ -1116,7 +1117,7 @@ Singleton {
 
     // If user switches device mid-stream, stop the mic.
     Connections {
-        target: KdeConnectService
+        target: ExtensionServices.get("phone-link", "KdeConnectService")
         ignoreUnknownSignals: true
         function onActiveDeviceIdChanged() {
             if (root.running || root.connecting) {
@@ -1126,7 +1127,7 @@ Singleton {
             root._fetchDeviceIp()
         }
         function onActiveReachableChanged() {
-            if (KdeConnectService.activeReachable) {
+            if (ExtensionServices.get("phone-link", "KdeConnectService").activeReachable) {
                 root._fetchDeviceIp()
             }
         }

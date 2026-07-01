@@ -1,5 +1,6 @@
 import qs.modules.common
 import qs
+import qs.services
 import QtQuick
 import Quickshell
 import Quickshell.Io
@@ -86,7 +87,7 @@ Singleton {
         checkAvailProc.running = true
     }
 
-    // Mirror KdeConnectService._enabled: stays dormant when Phone tab is off.
+    // Mirror ExtensionServices.get("phone-link", "KdeConnectService")._enabled: stays dormant when Phone tab is off.
     readonly property bool _enabled: Config.options.policies.phone !== 0
 
     on_EnabledChanged: {
@@ -436,7 +437,7 @@ Singleton {
      */
     function startCamera(): void {
         if (!root.available || root.running || root.connecting) return
-        if (!KdeConnectService.activeReachable) {
+        if (!ExtensionServices.get("phone-link", "KdeConnectService").activeReachable) {
             root.lastError = "No reachable KDE Connect device — pair a device first"
             root.errorOccurred(root.lastError)
             return
@@ -655,7 +656,7 @@ Singleton {
      * launch flow after the probe finishes.
      *
      * This replaces the old synchronous adbProbeForFallback pattern, which
-     * had a race: if KdeConnectService.adbReachable was stale (cached 30s),
+     * had a race: if ExtensionServices.get("phone-link", "KdeConnectService").adbReachable was stale (cached 30s),
      * the first invocation would fail and only the second one would work —
      * leaving the user stuck in "connecting" state.
      */
@@ -670,8 +671,8 @@ Singleton {
             "else exit 1; fi"]
         onExited: (code, status) => {
             const now = (code === 0)
-            if (now !== KdeConnectService.adbReachable) {
-                KdeConnectService.adbReachable = now
+            if (now !== ExtensionServices.get("phone-link", "KdeConnectService").adbReachable) {
+                ExtensionServices.get("phone-link", "KdeConnectService").adbReachable = now
             }
             if (!usbProbeForStartup._oneShot) return
             usbProbeForStartup._oneShot = false
@@ -745,7 +746,7 @@ Singleton {
 
     /** Triggers async DBus fetch of the active device's IPs. */
     function _fetchDeviceIp(): void {
-        const devId = KdeConnectService.activeDeviceId
+        const devId = ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId
         if (!devId) {
             root._lastKnownIp = ""
             return
@@ -759,7 +760,7 @@ Singleton {
 
     // Re-fetch IP whenever the active device changes (or first becomes available).
     Connections {
-        target: KdeConnectService
+        target: ExtensionServices.get("phone-link", "KdeConnectService")
         ignoreUnknownSignals: true
         function onActiveDeviceIdChanged() {
             if (root.running || root.connecting) {
@@ -769,7 +770,7 @@ Singleton {
             root._fetchDeviceIp()
         }
         function onActiveReachableChanged() {
-            if (KdeConnectService.activeReachable) {
+            if (ExtensionServices.get("phone-link", "KdeConnectService").activeReachable) {
                 root._fetchDeviceIp()
             }
         }
