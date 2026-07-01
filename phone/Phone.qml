@@ -752,8 +752,7 @@ Item {
                         buttonRadiusPressed: 18
                         colBackground: Appearance.colors.colLayer2
                         colBackgroundHover: Appearance.colors.colLayer2Hover
-                        colText: Appearance.colors.colOnLayer2
-                        enabled: ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
+                                                enabled: ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
                         opacity: enabled ? 1.0 : 0.5
                         materialIcon: "sync"
                         mainText: ""
@@ -780,8 +779,7 @@ Item {
                         buttonRadiusPressed: 18
                         colBackground: Appearance.colors.colLayer2
                         colBackgroundHover: Appearance.colors.colLayer2Hover
-                        colText: Appearance.colors.colOnLayer2
-                        enabled: false
+                                                enabled: false
                         hoverEnabled: false
                         opacity: 1.0
                         materialIcon: ""
@@ -794,7 +792,7 @@ Item {
                             horizontalAlignment: Text.AlignHCenter
                             text: parent.mainText
                             font.pixelSize: Appearance.font.pixelSize.small
-                            color: parent.colText
+                            color: Appearance.colors.colOnLayer2
                         }
                         background: Rectangle {
                             anchors.fill: parent
@@ -814,8 +812,7 @@ Item {
                         buttonRadiusPressed: 18
                         colBackground: Appearance.colors.colLayer2
                         colBackgroundHover: Appearance.colors.colLayer2Hover
-                        colText: Appearance.colors.colOnLayer2
-                        enabled: ExtensionServices.get("phone-link", "KdeConnectService").available
+                                                enabled: ExtensionServices.get("phone-link", "KdeConnectService").available
                                    && ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
                                    && ExtensionServices.get("phone-link", "KdeConnectService").hasDevices
                                    && ExtensionServices.get("phone-link", "KdeConnectService").notificationCount > 0

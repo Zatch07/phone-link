@@ -93,11 +93,11 @@ Singleton {
     property bool _userStopped: false
 
     function _storeOriginalSink(name: string): void {
-        Persistent.states.phoneMic.originalDefaultSink = name
+        if (Persistent.states.phoneMic) Persistent.states.phoneMic.originalDefaultSink = name
     }
 
     function _clearOriginalSink(): void {
-        Persistent.states.phoneMic.originalDefaultSink = ""
+        if (Persistent.states.phoneMic) Persistent.states.phoneMic.originalDefaultSink = ""
     }
 
     // 1s tick for the elapsed time counter.
@@ -722,7 +722,7 @@ Singleton {
     // Stored original default sink — restored after 3s or on stopMic().
     // Persisted so a shell reload mid-launch can recover the user's real
     // default sink instead of leaving DroidCam-Mic as default forever.
-    property string _originalDefaultSink: Persistent.states.phoneMic.originalDefaultSink
+    property string _originalDefaultSink: Persistent.states.phoneMic ? Persistent.states.phoneMic.originalDefaultSink : ""
 
     /** Helper — reports an error and cleans up mic state. */
     function _reportMicError(message): void {
