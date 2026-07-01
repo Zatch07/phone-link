@@ -37,10 +37,10 @@
       ]
     },
     "run_setup_script": {
-      "type": "string",
-      "label": "Command to run Setup Script",
+      "type": "bool",
+      "label": "Run Dependencies Script (Kitty)",
       "icon": "terminal",
-      "default": "kitty -- bash -c 'cd ~/.config/illogical-impulse/extensions/installed/phone-link && ./install_dependencies.sh'"
+      "default": false
     }
   }
 }
