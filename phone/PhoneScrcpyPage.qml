@@ -25,8 +25,14 @@ ContentPage {
     forceWidth: false
     signal goBack()
 
-    readonly property bool _ready: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable
-        && ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
+    Rectangle {
+        anchors.fill: parent
+        color: Appearance.colors.colLayer2
+        z: -1
+    }
+
+    readonly property bool _ready: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyAvailable
+        && (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable
 
     // Slide-up entrance when the sub-page overlay loads.
     opacity: 0
@@ -94,11 +100,11 @@ ContentPage {
             Layout.preferredHeight: 30
             Layout.preferredWidth: statusPill.implicitWidth + 22
             radius: Appearance.rounding.full
-            color: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
+            color: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning
                 ? Appearance.colors.colPrimaryContainer
-                : (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable ? Appearance.colors.colLayer3
+                : ((ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyAvailable ? Appearance.colors.colLayer3
                                                      : Appearance.colors.colErrorContainer)
-            opacity: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning ? 1.0 : 0.8
+            opacity: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning ? 1.0 : 0.8
 
             RowLayout {
                 id: statusPill
@@ -109,27 +115,27 @@ ContentPage {
                     Layout.alignment: Qt.AlignVCenter
                     text: "smart_display"
                     iconSize: 16
-                    color: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
+                    color: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning
                         ? Appearance.colors.colOnPrimaryContainer
-                        : (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable ? Appearance.colors.colOnLayer3
+                        : ((ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyAvailable ? Appearance.colors.colOnLayer3
                                                              : Appearance.colors.colOnErrorContainer)
                     animateChange: true
                 }
 
                 StyledText {
                     Layout.alignment: Qt.AlignVCenter
-                    text: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
+                    text: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning
                         ? Translation.tr("Running")
-                        : (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable
-                            ? (ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
+                        : ((ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyAvailable
+                            ? ((ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable
                                 ? Translation.tr("Ready")
                                 : Translation.tr("Offline"))
                             : Translation.tr("Unavailable"))
                     font.pixelSize: Appearance.font.pixelSize.smaller
                     font.weight: Font.DemiBold
-                    color: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
+                    color: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning
                         ? Appearance.colors.colOnPrimaryContainer
-                        : (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable ? Appearance.colors.colOnLayer3
+                        : ((ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyAvailable ? Appearance.colors.colOnLayer3
                                                              : Appearance.colors.colOnErrorContainer)
                 }
             }
@@ -139,15 +145,15 @@ ContentPage {
     // ─── Error / offline banner ────────────────────────────
     WarningBox {
         Layout.fillWidth: true
-        visible: !ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable || !ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
-        materialIcon: !ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable ? "download"
+        visible: !(ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyAvailable || !(ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable
+        materialIcon: !(ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyAvailable ? "download"
                     : "phonelink_off"
-        text: !ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable
+        text: !(ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyAvailable
             ? Translation.tr("scrcpy is not installed. Install scrcpy and android-tools to mirror your phone screen.")
             : Translation.tr("No reachable KDE Connect device. Pair a device first.")
 
         RippleButton {
-            visible: !ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable
+            visible: !(ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyAvailable
             Layout.alignment: Qt.AlignRight
             Layout.preferredHeight: 32
             buttonRadius: Appearance.rounding.full
@@ -186,13 +192,13 @@ ContentPage {
             Layout.fillWidth: true
             Layout.preferredHeight: 56
             buttonRadius: Appearance.rounding.normal
-            colBackground: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
+            colBackground: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning
                 ? Appearance.colors.colErrorContainer
                 : Appearance.colors.colPrimaryContainer
-            colBackgroundHover: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
+            colBackgroundHover: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning
                 ? Appearance.colors.colErrorContainerHover
                 : Appearance.colors.colPrimaryContainerHover
-            colRipple: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
+            colRipple: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning
                 ? Appearance.colors.colErrorContainerActive
                 : Appearance.colors.colPrimaryContainerActive
             enabled: root._ready
@@ -202,31 +208,31 @@ ContentPage {
                 spacing: 10
                 MaterialSymbol {
                     Layout.alignment: Qt.AlignVCenter
-                    text: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning ? "stop_circle" : "play_circle"
+                    text: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning ? "stop_circle" : "play_circle"
                     iconSize: 24
-                    color: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
+                    color: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning
                         ? Appearance.colors.colOnErrorContainer
                         : Appearance.colors.colOnPrimaryContainer
-                    fill: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning ? 1.0 : 0.0
+                    fill: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning ? 1.0 : 0.0
                 }
                 StyledText {
                     Layout.fillWidth: true
-                    text: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
+                    text: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning
                         ? Translation.tr("Kill scrcpy")
                         : Translation.tr("Launch scrcpy")
                     font.pixelSize: Appearance.font.pixelSize.normal
                     font.weight: Font.DemiBold
-                    color: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
+                    color: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning
                         ? Appearance.colors.colOnErrorContainer
                         : Appearance.colors.colOnPrimaryContainer
                 }
             }
 
             onClicked: {
-                if (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning)
-                    ExtensionServices.get("phone-link", "KdeConnectService").killScrcpy()
+                if ((ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning)
+                    (ExtensionServices.get("phone-link", "KdeConnectService") || {}).killScrcpy()
                 else
-                    ExtensionServices.get("phone-link", "KdeConnectService").launchScrcpy(ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId)
+                    (ExtensionServices.get("phone-link", "KdeConnectService") || {}).launchScrcpy((ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDeviceId)
             }
         }
 
@@ -241,7 +247,7 @@ ContentPage {
                 buttonRadius: Appearance.rounding.normal
                 colBackground: Appearance.colors.colLayer2
                 colBackgroundHover: Appearance.colors.colLayer2Hover
-                enabled: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
+                enabled: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning
                 opacity: enabled ? 1.0 : 0.5
                 contentItem: RowLayout {
                     spacing: 6
@@ -259,7 +265,7 @@ ContentPage {
                         color: Appearance.colors.colOnLayer2
                     }
                 }
-                onClicked: ExtensionServices.get("phone-link", "KdeConnectService").focusScrcpyWindow()
+                onClicked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).focusScrcpyWindow()
                 StyledToolTip {
                     text: Translation.tr("Raise the existing scrcpy window")
                 }
@@ -271,7 +277,7 @@ ContentPage {
                 buttonRadius: Appearance.rounding.normal
                 colBackground: Appearance.colors.colLayer2
                 colBackgroundHover: Appearance.colors.colLayer2Hover
-                enabled: ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
+                enabled: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable
                 opacity: enabled ? 1.0 : 0.5
                 contentItem: RowLayout {
                     spacing: 6
@@ -289,7 +295,7 @@ ContentPage {
                         color: Appearance.colors.colOnLayer2
                     }
                 }
-                onClicked: ExtensionServices.get("phone-link", "KdeConnectService").promptWirelessConnect(ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId)
+                onClicked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).promptWirelessConnect((ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDeviceId)
                 StyledToolTip {
                     text: Translation.tr("Prompt for IP:port and switch to wireless mode")
                 }
@@ -301,7 +307,7 @@ ContentPage {
                 buttonRadius: Appearance.rounding.normal
                 colBackground: Appearance.colors.colLayer2
                 colBackgroundHover: Appearance.colors.colLayer2Hover
-                enabled: ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
+                enabled: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable
                 opacity: enabled ? 1.0 : 0.5
                 contentItem: RowLayout {
                     spacing: 6
@@ -319,7 +325,7 @@ ContentPage {
                         color: Appearance.colors.colOnLayer2
                     }
                 }
-                onClicked: ExtensionServices.get("phone-link", "KdeConnectService").adbScreenshot()
+                onClicked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).adbScreenshot()
                 StyledToolTip {
                     text: Translation.tr("Screenshot the phone via ADB")
                 }
@@ -338,8 +344,8 @@ ContentPage {
             from: 0
             to: 1920
             stepSize: 240
-            value: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.maxSize
-            onValueChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.maxSize = value
+            value: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.maxSize
+            onValueChanged: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.maxSize = value
             usePercentTooltip: false
         }
 
@@ -348,8 +354,8 @@ ContentPage {
             buttonIcon: "speed"
             from: 0
             to: 120
-            value: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.maxFps
-            onValueChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.maxFps = value
+            value: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.maxFps
+            onValueChanged: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.maxFps = value
             usePercentTooltip: false
         }
 
@@ -357,9 +363,9 @@ ContentPage {
             text: Translation.tr("Bitrate")
             icon: "network_check"
             placeholderText: "8M"
-            inputText: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.bitRate
+            inputText: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.bitRate
             onEditingFinished: {
-                ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.bitRate = inputText.trim()
+                (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.bitRate = inputText.trim()
             }
         }
 
@@ -368,8 +374,8 @@ ContentPage {
             buttonIcon: "timer"
             from: 0
             to: 200
-            value: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.videoBuffer
-            onValueChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.videoBuffer = value
+            value: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.videoBuffer
+            onValueChanged: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.videoBuffer = value
             usePercentTooltip: false
         }
     }
@@ -382,57 +388,57 @@ ContentPage {
         ConfigSwitch {
             buttonIcon: "coffee"
             text: Translation.tr("Stay awake")
-            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.stayAwake
-            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.stayAwake = checked
+            checked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.stayAwake
+            onCheckedChanged: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.stayAwake = checked
         }
 
         ConfigSwitch {
             buttonIcon: "phone_android"
             text: Translation.tr("Turn screen off")
-            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.turnScreenOff
-            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.turnScreenOff = checked
+            checked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.turnScreenOff
+            onCheckedChanged: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.turnScreenOff = checked
         }
 
         ConfigSwitch {
             buttonIcon: "power_off"
             text: Translation.tr("No power on")
-            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.noPowerOn
-            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.noPowerOn = checked
+            checked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.noPowerOn
+            onCheckedChanged: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.noPowerOn = checked
         }
 
         ConfigSwitch {
             buttonIcon: "volume_off"
             text: Translation.tr("No audio")
-            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.noAudio
-            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.noAudio = checked
+            checked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.noAudio
+            onCheckedChanged: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.noAudio = checked
         }
 
         ConfigSwitch {
             buttonIcon: "touch_app"
             text: Translation.tr("Show touches")
-            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.showTouches
-            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.showTouches = checked
+            checked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.showTouches
+            onCheckedChanged: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.showTouches = checked
         }
 
         ConfigSwitch {
             buttonIcon: "fullscreen"
             text: Translation.tr("Fullscreen")
-            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.fullscreen
-            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.fullscreen = checked
+            checked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.fullscreen
+            onCheckedChanged: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.fullscreen = checked
         }
 
         ConfigSwitch {
             buttonIcon: "push_pin"
             text: Translation.tr("Always on top")
-            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.alwaysOnTop
-            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.alwaysOnTop = checked
+            checked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.alwaysOnTop
+            onCheckedChanged: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.alwaysOnTop = checked
         }
 
         ConfigSwitch {
             buttonIcon: "terminal"
             text: Translation.tr("Show terminal")
-            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.showTerminal
-            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.showTerminal = checked
+            checked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.showTerminal
+            onCheckedChanged: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.showTerminal = checked
         }
     }
 
@@ -460,7 +466,7 @@ ContentPage {
                 buttonRadius: Appearance.rounding.normal
                 colBackground: Appearance.colors.colLayer2
                 colBackgroundHover: Appearance.colors.colLayer2Hover
-                enabled: ExtensionServices.get("phone-link", "KdeConnectService").activeReachable && ExtensionServices.get("phone-link", "KdeConnectService").adbReachable
+                enabled: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable && (ExtensionServices.get("phone-link", "KdeConnectService") || {}).adbReachable
                 opacity: enabled ? 1.0 : 0.5
                 contentItem: RowLayout {
                     spacing: 6
@@ -478,7 +484,7 @@ ContentPage {
                         color: Appearance.colors.colOnLayer2
                     }
                 }
-                onClicked: ExtensionServices.get("phone-link", "KdeConnectService").enableWirelessAdb()
+                onClicked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).enableWirelessAdb()
                 StyledToolTip {
                     text: Translation.tr("Runs adb tcpip 5555 on the USB-connected phone")
                 }
@@ -490,8 +496,8 @@ ContentPage {
                 buttonRadius: Appearance.rounding.normal
                 colBackground: Appearance.colors.colLayer2
                 colBackgroundHover: Appearance.colors.colLayer2Hover
-                enabled: ExtensionServices.get("phone-link", "KdeConnectService").activeDevice
-                            && (ExtensionServices.get("phone-link", "KdeConnectService").activeDevice.reachableAddresses || []).length > 0
+                enabled: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDevice
+                            && ((ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDevice.reachableAddresses || []).length > 0
                 opacity: enabled ? 1.0 : 0.5
                 contentItem: RowLayout {
                     spacing: 6
@@ -510,7 +516,7 @@ ContentPage {
                     }
                 }
                 onClicked: {
-                    const ip = (ExtensionServices.get("phone-link", "KdeConnectService").activeDevice.reachableAddresses || [])[0] || ""
+                    const ip = ((ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDevice.reachableAddresses || [])[0] || ""
                     if (ip) Quickshell.clipboardText = ip
                 }
                 StyledToolTip {
@@ -529,31 +535,31 @@ ContentPage {
         ConfigSwitch {
             buttonIcon: "wifi"
             text: Translation.tr("Use wireless ADB")
-            checked: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.useWireless
-            onCheckedChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.useWireless = checked
+            checked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.useWireless
+            onCheckedChanged: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.useWireless = checked
         }
 
         ConfigTextField {
-            visible: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.useWireless
+            visible: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.useWireless
             text: Translation.tr("Phone IP")
             icon: "ip"
             placeholderText: "192.168.1.42"
-            inputText: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.wirelessIp
+            inputText: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.wirelessIp
             onEditingFinished: {
-                ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.wirelessIp = inputText.trim()
+                (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.wirelessIp = inputText.trim()
             }
         }
 
         ConfigSpinBox {
-            visible: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.useWireless
+            visible: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.useWireless
             text: Translation.tr("Port")
             icon: "router"
-            value: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.wirelessPort
-                    ? parseInt(ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.wirelessPort, 10)
+            value: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.wirelessPort
+                    ? parseInt((ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.wirelessPort, 10)
                     : 5555
             from: 1024
             to: 65535
-            onValueChanged: ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy.wirelessPort = String(value)
+            onValueChanged: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.scrcpy.wirelessPort = String(value)
         }
     }
 

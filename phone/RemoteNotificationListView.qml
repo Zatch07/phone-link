@@ -10,21 +10,21 @@ import Quickshell
  *
  * Uses the same grouping pattern as the dashboard: delegates are
  * `RemoteNotificationGroup` instances backed by
- * `ExtensionServices.get("phone-link", "KdeConnectService").groupsByAppName` / `appNameList`. Each group
+ * `(ExtensionServices.get("phone-link", "KdeConnectService") || {}).groupsByAppName` / `appNameList`. Each group
  * collapses multiple notifications from the same app into a single card
  * with a count badge and expand/collapse button.
  *
  * The `dragIndex` / `dragDistance` properties are consumed by the group
  * delegates to animate neighboring items during swipe-to-dismiss.
  *
- * Source of truth: `ExtensionServices.get("phone-link", "KdeConnectService").notifications` (only the active
+ * Source of truth: `(ExtensionServices.get("phone-link", "KdeConnectService") || {}).notifications` (only the active
  * device's notifications are retained).
  */
 StyledListView {
     id: root
 
     property bool dismissToLeft: false
-    property string deviceId: ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId || ""
+    property string deviceId: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDeviceId || ""
 
     spacing: 3
     clip: true
@@ -36,14 +36,14 @@ StyledListView {
     cacheBuffer: 600
 
     model: ScriptModel {
-        values: ExtensionServices.get("phone-link", "KdeConnectService").appNameList
+        values: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).appNameList
     }
     delegate: RemoteNotificationGroup {
         required property int index
         required property var modelData
         width: ListView.view.width
         notificationGroup: {
-            const g = ExtensionServices.get("phone-link", "KdeConnectService").groupsByAppName[modelData]
+            const g = (ExtensionServices.get("phone-link", "KdeConnectService") || {}).groupsByAppName[modelData]
             // Guard against the transient state where appNameList has been
             // updated but groupsByAppName hasn't finished recomputing yet
             // (or vice versa). Returning undefined would render an empty
@@ -54,12 +54,12 @@ StyledListView {
 
     PagePlaceholder {
         anchors.fill: parent
-        shown: ExtensionServices.get("phone-link", "KdeConnectService").notifications.length === 0
+        shown: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).notifications.length === 0
         icon: "notifications_off"
         description: {
-            if (ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
-                    && ExtensionServices.get("phone-link", "KdeConnectService").activeDevice
-                    && (ExtensionServices.get("phone-link", "KdeConnectService").activeDevice.supportedPlugins
+            if ((ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable
+                    && (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDevice
+                    && ((ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDevice.supportedPlugins
                             || []).indexOf("kdeconnect_notifications") >= 0) {
                 return Translation.tr(
                     "No notifications\nMake sure KDE Connect has Notification Access on your phone")

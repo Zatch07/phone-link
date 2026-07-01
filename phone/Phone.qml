@@ -11,7 +11,7 @@ import qs.services
 /**
  * "Phone" tab of the Sidebar Policies.
  *
- * Backed by `ExtensionServices.get("phone-link", "KdeConnectService")` which mirrors the KDE Connect daemon into a
+ * Backed by `(ExtensionServices.get("phone-link", "KdeConnectService") || {})` which mirrors the KDE Connect daemon into a
  * reactive JS state. The page is split into three zones:
  *
  *   ┌─ Header ────────────────────────┐
@@ -40,7 +40,7 @@ Item {
     // the main content is shown.
     property url activeSubPage: ""
 
-    readonly property var _kdc: ExtensionServices.get("phone-link", "KdeConnectService")
+    readonly property var _kdc: (ExtensionServices.get("phone-link", "KdeConnectService") || {})
     readonly property bool emptyStateVisible: !_kdc || !_kdc.available
                                                || (_kdc.hasDevices
                                                    && _kdc.devices
@@ -191,14 +191,14 @@ Item {
         }
 
         Connections {
-            target: ExtensionServices.get("phone-link", "KdeConnectService")
+            target: (ExtensionServices.get("phone-link", "KdeConnectService") || {})
             ignoreUnknownSignals: true
             function onActionFeedback(message, ok) {
                 toastLayer.show(message, ok)
             }
             function onActiveDeviceBatteryLow(devId, charge) {
-                const name = ExtensionServices.get("phone-link", "KdeConnectService").activeDevice
-                    ? ExtensionServices.get("phone-link", "KdeConnectService").activeDevice.name
+                const name = (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDevice
+                    ? (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDevice.name
                     : Translation.tr("Phone")
                 Quickshell.execDetached([
                     "notify-send",
@@ -209,8 +209,8 @@ Item {
                 ])
             }
             function onActiveDeviceBatteryRecovered(devId, charge) {
-                const name = ExtensionServices.get("phone-link", "KdeConnectService").activeDevice
-                    ? ExtensionServices.get("phone-link", "KdeConnectService").activeDevice.name
+                const name = (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDevice
+                    ? (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDevice.name
                     : Translation.tr("Phone")
                 Quickshell.execDetached([
                     "notify-send",
@@ -242,7 +242,7 @@ Item {
         // checks (every 10s) and internal property updates, not just from
         // user-driven start/stop.
         Connections {
-            target: ExtensionServices.get("phone-link", "PhoneCameraService")
+            target: (ExtensionServices.get("phone-link", "PhoneCameraService") || {})
             ignoreUnknownSignals: true
             function onErrorOccurred(message) {
                 toastLayer.show(message.split("\n")[0], false)
@@ -253,7 +253,7 @@ Item {
         }
 
         Connections {
-            target: ExtensionServices.get("phone-link", "PhoneMicService")
+            target: (ExtensionServices.get("phone-link", "PhoneMicService") || {})
             ignoreUnknownSignals: true
             function onErrorOccurred(message) {
                 toastLayer.show(message.split("\n")[0], false)
@@ -374,7 +374,7 @@ Item {
 
                         Repeater {
                             id: recentRepeater
-                            model: ExtensionServices.get("phone-link", "KdeConnectService").recentDevices
+                            model: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).recentDevices
                             delegate: RippleButton {
                                 id: recentMenuItem
                                 required property var modelData
@@ -427,7 +427,7 @@ Item {
                                     }
                                 }
                                 onClicked: () => {
-                                    ExtensionServices.get("phone-link", "KdeConnectService").selectDevice(modelData?.id)
+                                    (ExtensionServices.get("phone-link", "KdeConnectService") || {}).selectDevice(modelData?.id)
                                     deviceMenuOverlay.visible = false
                                 }
                             }
@@ -455,17 +455,17 @@ Item {
                     }
 
                     Repeater {
-                        model: ExtensionServices.get("phone-link", "KdeConnectService").devices.filter(d => d.paired)
+                        model: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).devices.filter(d => d.paired)
                         delegate: RippleButton {
                             id: deviceMenuItem
                             required property var modelData
                             Layout.fillWidth: true
                             Layout.preferredHeight: 40
                             buttonRadius: Appearance.rounding.small
-                            colBackground: modelData?.id === ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId
+                            colBackground: modelData?.id === (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDeviceId
                                 ? Appearance.colors.colPrimaryContainer
                                 : "transparent"
-                            colBackgroundHover: modelData?.id === ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId
+                            colBackgroundHover: modelData?.id === (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDeviceId
                                 ? Appearance.colors.colPrimaryContainerHover
                                 : Appearance.colors.colLayer2Hover
                             contentItem: RowLayout {
@@ -474,7 +474,7 @@ Item {
                                     Layout.alignment: Qt.AlignVCenter
                                     text: "smartphone"
                                     iconSize: Appearance.font.pixelSize.normal
-                                    color: modelData?.id === ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId
+                                    color: modelData?.id === (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDeviceId
                                         ? Appearance.colors.colOnPrimaryContainer
                                         : (modelData?.reachable
                                             ? Appearance.colors.colOnLayer2
@@ -488,7 +488,7 @@ Item {
                                         text: modelData?.name || "Unknown"
                                         font.pixelSize: Appearance.font.pixelSize.small
                                         font.weight: Font.DemiBold
-                                        color: modelData?.id === ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId
+                                        color: modelData?.id === (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDeviceId
                                             ? Appearance.colors.colOnPrimaryContainer
                                             : (modelData?.reachable
                                                 ? Appearance.colors.colOnLayer2
@@ -501,7 +501,7 @@ Item {
                                             ? Translation.tr("Tap to use")
                                             : Translation.tr("Offline · paired")
                                         font.pixelSize: Appearance.font.pixelSize.smaller
-                                        color: modelData?.id === ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId
+                                        color: modelData?.id === (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDeviceId
                                             ? Appearance.colors.colOnPrimaryContainer
                                             : Appearance.colors.colSubtext
                                         opacity: 0.8
@@ -509,20 +509,20 @@ Item {
                                 }
                                 MaterialSymbol {
                                     Layout.alignment: Qt.AlignVCenter
-                                    text: modelData?.id === ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId
+                                    text: modelData?.id === (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDeviceId
                                         ? "check_circle"
                                         : (modelData?.reachable
                                             ? "radio_button_unchecked"
                                             : "do_not_disturb_on")
                                     iconSize: Appearance.font.pixelSize.normal
-                                    color: modelData?.id === ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId
+                                    color: modelData?.id === (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDeviceId
                                         ? Appearance.colors.colOnPrimaryContainer
                                         : Appearance.colors.colSubtext
                                     animateChange: true
                                 }
                             }
                             onClicked: () => {
-                                ExtensionServices.get("phone-link", "KdeConnectService").selectDevice(modelData?.id)
+                                (ExtensionServices.get("phone-link", "KdeConnectService") || {}).selectDevice(modelData?.id)
                                 deviceMenuOverlay.visible = false
                             }
                         }
@@ -559,7 +559,7 @@ Item {
                             }
                         }
                         onClicked: {
-                            ExtensionServices.get("phone-link", "KdeConnectService").refreshDevices()
+                            (ExtensionServices.get("phone-link", "KdeConnectService") || {}).refreshDevices()
                             deviceMenuOverlay.visible = false
                         }
                     }
@@ -601,7 +601,7 @@ Item {
 
             // ───────── PAIRING REQUEST BANNERS ─────────
             Repeater {
-                model: ExtensionServices.get("phone-link", "KdeConnectService").pendingPairRequests
+                model: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).pendingPairRequests
                 delegate: Rectangle {
                     required property var modelData
                     Layout.fillWidth: true
@@ -677,7 +677,7 @@ Item {
                                 iconSize: Appearance.font.pixelSize.normal
                                 color: Appearance.colors.colOnPrimaryContainer
                             }
-                            onClicked: ExtensionServices.get("phone-link", "KdeConnectService").declinePairing(modelData?.id)
+                            onClicked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).declinePairing(modelData?.id)
                             StyledToolTip {
                                 text: Translation.tr("Decline")
                             }
@@ -697,7 +697,7 @@ Item {
                                 font.weight: Font.DemiBold
                                 color: Appearance.colors.colOnPrimary
                             }
-                            onClicked: ExtensionServices.get("phone-link", "KdeConnectService").acceptPairing(modelData?.id)
+                            onClicked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).acceptPairing(modelData?.id)
                         }
                     }
                 }
@@ -753,7 +753,7 @@ Item {
                         buttonRadiusPressed: 18
                         colBackground: Appearance.colors.colLayer2
                         colBackgroundHover: Appearance.colors.colLayer2Hover
-                                                enabled: ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
+                                                enabled: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable
                         opacity: enabled ? 1.0 : 0.5
                         materialIcon: "sync"
                         mainText: ""
@@ -765,7 +765,7 @@ Item {
                                 animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
                             }
                         }
-                        onClicked: () => ExtensionServices.get("phone-link", "KdeConnectService").requestNotificationsRefresh()
+                        onClicked: () => (ExtensionServices.get("phone-link", "KdeConnectService") || {}).requestNotificationsRefresh()
                         StyledToolTip {
                             text: Translation.tr("Sync notifications")
                         }
@@ -784,9 +784,9 @@ Item {
                         hoverEnabled: false
                         opacity: 1.0
                         materialIcon: ""
-                        mainText: ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
+                        mainText: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable
                                     ? Translation.tr("%1 notif.").arg(
-                                        String(ExtensionServices.get("phone-link", "KdeConnectService").notificationCount))
+                                        String((ExtensionServices.get("phone-link", "KdeConnectService") || {}).notificationCount))
                                     : Translation.tr("Device offline")
                         contentItem: StyledText {
                             anchors.centerIn: parent
@@ -813,12 +813,12 @@ Item {
                         buttonRadiusPressed: 18
                         colBackground: Appearance.colors.colLayer2
                         colBackgroundHover: Appearance.colors.colLayer2Hover
-                                                enabled: ExtensionServices.get("phone-link", "KdeConnectService").available
-                                   && ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
-                                   && ExtensionServices.get("phone-link", "KdeConnectService").hasDevices
-                                   && ExtensionServices.get("phone-link", "KdeConnectService").notificationCount > 0
+                                                enabled: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).available
+                                   && (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable
+                                   && (ExtensionServices.get("phone-link", "KdeConnectService") || {}).hasDevices
+                                   && (ExtensionServices.get("phone-link", "KdeConnectService") || {}).notificationCount > 0
                         opacity: enabled ? 1.0 : 0.5
-                        materialIcon: ExtensionServices.get("phone-link", "KdeConnectService").notificationCount > 0
+                        materialIcon: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).notificationCount > 0
                                     ? "delete_sweep"
                                     : "do_not_disturb_on"
                         mainText: ""
@@ -830,7 +830,7 @@ Item {
                                 animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
                             }
                         }
-                        onClicked: () => ExtensionServices.get("phone-link", "KdeConnectService").discardAllNotifications()
+                        onClicked: () => (ExtensionServices.get("phone-link", "KdeConnectService") || {}).discardAllNotifications()
                         StyledToolTip {
                             text: Translation.tr("Dismiss all phone notifications")
                         }
@@ -859,7 +859,7 @@ Item {
 
                 MaterialSymbol {
                     Layout.alignment: Qt.AlignHCenter
-                    text: ExtensionServices.get("phone-link", "KdeConnectService").available
+                    text: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).available
                           ? "phonelink_off" : "phonelink_erase"
                     iconSize: 64
                     color: Appearance.colors.colSubtext
@@ -867,7 +867,7 @@ Item {
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
                     Layout.preferredWidth: root.width * 0.85
-                    text: ExtensionServices.get("phone-link", "KdeConnectService").available
+                    text: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).available
                           ? Translation.tr("No device connected")
                           : Translation.tr("KDE Connect not installed")
                     font.pixelSize: Appearance.font.pixelSize.huge
@@ -878,7 +878,7 @@ Item {
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
                     Layout.preferredWidth: root.width * 0.85
-                    text: ExtensionServices.get("phone-link", "KdeConnectService").available
+                    text: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).available
                           ? Translation.tr("Pair a device through KDE Connect on your phone — once it shows up here, sync notifications, share clipboard, dump files and launch scrcpy mirror.")
                           : Translation.tr("Install `kdeconnect-cli` and the KDE Connect Android app, then pair a device. After pairing it will mirror here automatically.")
                     font.pixelSize: Appearance.font.pixelSize.small
@@ -895,7 +895,7 @@ Item {
                     buttonRadius: Appearance.rounding.full
                     colBackground: Appearance.colors.colPrimaryContainer
                     colBackgroundHover: Appearance.colors.colPrimaryContainerHover
-                    visible: !ExtensionServices.get("phone-link", "KdeConnectService").available
+                    visible: !(ExtensionServices.get("phone-link", "KdeConnectService") || {}).available
                     contentItem: RowLayout {
                         spacing: 6
                         MaterialSymbol {

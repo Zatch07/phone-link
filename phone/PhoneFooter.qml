@@ -2,7 +2,7 @@
 // Render the 3 hero cards (scrcpy/webcam/mic) at the bottom of the Phone tab.
 // Each card has a state machine: unavailable | offline | ready | connecting | active.
 // The detailLine binding shows elapsed time and connection info when active.
-// Backed by ExtensionServices.get("phone-link", "KdeConnectService"), ExtensionServices.get("phone-link", "PhoneCameraService") and ExtensionServices.get("phone-link", "PhoneMicService") singletons.
+// Backed by (ExtensionServices.get("phone-link", "KdeConnectService") || {}), (ExtensionServices.get("phone-link", "PhoneCameraService") || {}) and (ExtensionServices.get("phone-link", "PhoneMicService") || {}) singletons.
 
 
 // Performance fix: multi-arg .arg() doesn't work in this Qt/Quickshell version
@@ -45,9 +45,9 @@ Item {
     signal requestOpenSubPage(url target)
 
     // ─── Null-safe service aliases ─────────────────────────
-    readonly property var _kdc: ExtensionServices.get("phone-link", "KdeConnectService")
-    readonly property var _cam: ExtensionServices.get("phone-link", "PhoneCameraService")
-    readonly property var _mic: ExtensionServices.get("phone-link", "PhoneMicService")
+    readonly property var _kdc: (ExtensionServices.get("phone-link", "KdeConnectService") || {})
+    readonly property var _cam: (ExtensionServices.get("phone-link", "PhoneCameraService") || {})
+    readonly property var _mic: (ExtensionServices.get("phone-link", "PhoneMicService") || {})
 
     readonly property bool _scrcpyPresent: _kdc ? _kdc.scrcpyAvailable : false
     readonly property bool _droidcamPresent: _cam ? _cam.available : false
@@ -92,7 +92,7 @@ Item {
             iconName: "smart_display"
             iconShape: MaterialShape.Shape.Cookie9Sided
             title: root._scrcpyPresent
-                ? (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
+                ? ((ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning
                     ? Translation.tr("scrcpy Mirror")
                     : Translation.tr("Open scrcpy Mirror"))
                 : Translation.tr("Install scrcpy")
@@ -101,9 +101,9 @@ Item {
                     return Translation.tr("Click to see missing dependencies and install guide")
                 if (!root._deviceOnline)
                     return Translation.tr("Pair a reachable device to mirror its screen")
-                if (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning)
+                if ((ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyRunning)
                     return Translation.tr("Mirror is running · click to focus window")
-                if (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyLaunching)
+                if ((ExtensionServices.get("phone-link", "KdeConnectService") || {}).scrcpyLaunching)
                     return Translation.tr("Launching scrcpy…")
                 return Translation.tr("Launches a floating SDL window for the active phone")
             }

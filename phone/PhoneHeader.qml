@@ -35,7 +35,7 @@ Item {
     // is anchored to the Phone panel rectangle, not the screen origin.
     signal requestDeviceMenu(var originItem, real originW)
 
-    readonly property var _device: ExtensionServices.get("phone-link", "KdeConnectService").activeDevice
+    readonly property var _device: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDevice
     readonly property int _battery: _device?.charge ?? -1
     readonly property bool _charging: _device?.charging ?? false
     readonly property string _signalType: _device?.signalType ?? ""
@@ -56,14 +56,14 @@ Item {
         // ─── Device selector chip ───
         RippleButton {
             id: deviceChip
-            property var pairedDevices: ExtensionServices.get("phone-link", "KdeConnectService").devices
+            property var pairedDevices: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).devices
                                                     .filter(d => d.paired)
 
             Layout.preferredHeight: 38
             Layout.fillWidth: false
             Layout.minimumWidth: 140
             Layout.maximumWidth: 280
-            enabled: ExtensionServices.get("phone-link", "KdeConnectService").hasDevices && pairedDevices.length > 0
+            enabled: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).hasDevices && pairedDevices.length > 0
             opacity: enabled ? 1.0 : 0.5
             buttonRadius: Appearance.rounding.full
             colBackground: Appearance.colors.colLayer3
@@ -91,8 +91,8 @@ Item {
                     Layout.alignment: Qt.AlignVCenter
                     Layout.fillWidth: true
                     elide: Text.ElideRight
-                    text: ExtensionServices.get("phone-link", "KdeConnectService").activeDevice
-                          ? ExtensionServices.get("phone-link", "KdeConnectService").activeDevice.name
+                    text: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDevice
+                          ? (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDevice.name
                           : Translation.tr("No device")
                     font.pixelSize: Appearance.font.pixelSize.small
                     font.weight: Font.DemiBold
@@ -121,7 +121,7 @@ Item {
             Layout.preferredWidth: signalRow.implicitWidth + 22
             radius: Appearance.rounding.full
             color: Appearance.colors.colLayer3
-            opacity: ExtensionServices.get("phone-link", "KdeConnectService").activeReachable ? 1.0 : 0.4
+            opacity: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable ? 1.0 : 0.4
 
             RowLayout {
                 id: signalRow
@@ -146,7 +146,7 @@ Item {
                             border.width: 1
                             border.color: index < root._signalStrength
                                 ? Appearance.colors.colPrimary
-                                : (ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
+                                : ((ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable
                                     ? Appearance.colors.colSubtext
                                     : Appearance.colors.colOnLayer3)
                             opacity: index < root._signalStrength ? 1.0 : 0.4
@@ -265,7 +265,7 @@ Item {
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                onClicked: ExtensionServices.get("phone-link", "KdeConnectService")._probeAdb()
+                onClicked: (ExtensionServices.get("phone-link", "KdeConnectService") || {})._probeAdb()
             }
         }
     }

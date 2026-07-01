@@ -125,7 +125,7 @@ Item {
 
     function dismissAllOnPhone() {
         root.notifications.forEach(notif => {
-            ExtensionServices.get("phone-link", "KdeConnectService").discardNotification(notif.publicId)
+            (ExtensionServices.get("phone-link", "KdeConnectService") || {}).discardNotification(notif.publicId)
         })
     }
 
@@ -184,7 +184,7 @@ Item {
             else if (mouse.button === Qt.LeftButton) {
                 const latest = root.notifications[0]
                 if (latest && latest.publicId) {
-                    ExtensionServices.get("phone-link", "KdeConnectService").openNotificationIntent(latest.publicId)
+                    (ExtensionServices.get("phone-link", "KdeConnectService") || {}).openNotificationIntent(latest.publicId)
                 }
             }
         }
@@ -333,7 +333,7 @@ Item {
                             // Without this, the timestamp would be computed
                             // once and never change.
                             text: {
-                                ExtensionServices.get("phone-link", "KdeConnectService")._timeTick
+                                (ExtensionServices.get("phone-link", "KdeConnectService") || {})._timeTick
                                 return NotificationUtils.getFriendlyNotifTimeString(
                                     root.notificationGroup?.time ?? 0)
                             }
