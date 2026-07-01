@@ -1,0 +1,4 @@
+module phone.link.services
+singleton KdeConnectService 1.0 KdeConnectService.qml
+singleton PhoneCameraService 1.0 PhoneCameraService.qml
+singleton PhoneMicService 1.0 PhoneMicService.qml

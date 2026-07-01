@@ -10,6 +10,7 @@ pragma ComponentBehavior: Bound
 // Use chained .arg(x).arg(y) instead.
 
 import QtQuick
+import "../services" 1.0
 import QtQuick.Layouts
 import Quickshell
 import qs.modules.common

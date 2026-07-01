@@ -1,17 +1,18 @@
 {
-  "id": "phone-link",
+  "extensionId": "phone-link",
   "name": "Phone Link",
-  "version": "1.0.0",
   "description": "Phone integration using KDE Connect, scrcpy, and DroidCam.",
+  "version": "1.0.0",
   "author": "Antigravity",
-  "main": "phone/Phone.qml",
-  "contributions": {
+  "icon": "smartphone",
+  "shapeString": "Cookie9Sided",
+  "contributes": {
     "sidebarLeftPages": [
       {
-        "id": "phone",
-        "name": "Phone",
+        "identifier": "phone",
+        "title": "Phone",
         "icon": "smartphone",
-        "page": "phone/Phone.qml"
+        "component": "phone/Phone.qml"
       }
     ]
   }

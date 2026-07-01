@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import "../services" 1.0
 import QtQuick.Layouts
 import Quickshell
 import qs.modules.common
