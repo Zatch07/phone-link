@@ -37,4 +37,17 @@ else
     echo "- droidcam-cli (for webcam)"
 fi
 
+echo ""
+echo "Configuring DroidCam kernel modules to load on startup..."
+if [ -d "/etc/modules-load.d" ]; then
+    echo -e "snd_aloop\nv4l2loopback" | sudo tee /etc/modules-load.d/droidcam.conf > /dev/null
+    echo "Added snd_aloop and v4l2loopback to /etc/modules-load.d/droidcam.conf"
+    # Attempt to load them right now so reboot isn't required
+    sudo modprobe snd_aloop 2>/dev/null || true
+    sudo modprobe v4l2loopback 2>/dev/null || true
+else
+    echo "Warning: /etc/modules-load.d not found. Could not configure auto-load for DroidCam modules."
+fi
+
+echo ""
 echo "Done!"
