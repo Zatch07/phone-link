@@ -1,7 +1,6 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import "../services" 1.0
 import QtQuick.Layouts
 import Quickshell
 import qs.modules.common
@@ -26,18 +25,18 @@ Item {
     implicitHeight: actionsRow.implicitHeight + 16
     height: implicitHeight
 
-    readonly property string _devId: KdeConnectService.activeDeviceId || ""
-    readonly property var _plugins: KdeConnectService.activeDevice
-        ? (KdeConnectService.activeDevice.supportedPlugins || [])
+    readonly property string _devId: ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId || ""
+    readonly property var _plugins: ExtensionServices.get("phone-link", "KdeConnectService").activeDevice
+        ? (ExtensionServices.get("phone-link", "KdeConnectService").activeDevice.supportedPlugins || [])
         : []
 
     function _has(plugin) {
-        if (!KdeConnectService.activeReachable) return false
+        if (!ExtensionServices.get("phone-link", "KdeConnectService").activeReachable) return false
         return _plugins.indexOf(plugin) >= 0
     }
 
     function _feedback(message, ok) {
-        KdeConnectService.dispatchActionFeedback(message, ok)
+        ExtensionServices.get("phone-link", "KdeConnectService").dispatchActionFeedback(message, ok)
     }
 
     Row {
@@ -53,7 +52,7 @@ Item {
             toolTipText: Translation.tr("Ring phone")
             enabled: root._has("kdeconnect_findmyphone")
             onClicked: {
-                KdeConnectService.findMyPhone(root._devId)
+                ExtensionServices.get("phone-link", "KdeConnectService").findMyPhone(root._devId)
                 root._feedback(Translation.tr("Ringing phone…"), true)
             }
         }
@@ -65,7 +64,7 @@ Item {
             toolTipText: Translation.tr("Send a ping")
             enabled: root._has("kdeconnect_ping")
             onClicked: {
-                KdeConnectService.sendPing(root._devId,
+                ExtensionServices.get("phone-link", "KdeConnectService").sendPing(root._devId,
                     Translation.tr("Ping from ii"))
                 root._feedback(Translation.tr("Ping sent"), true)
             }
@@ -79,7 +78,7 @@ Item {
             enabled: root._has("kdeconnect_clipboard")
             onClicked: {
                 if (Quickshell.clipboardText.length > 0) {
-                    KdeConnectService.sendClipboard(root._devId)
+                    ExtensionServices.get("phone-link", "KdeConnectService").sendClipboard(root._devId)
                     root._feedback(Translation.tr("Clipboard shared"), true)
                 } else {
                     root._feedback(Translation.tr("Clipboard is empty"), false)
@@ -94,7 +93,7 @@ Item {
             toolTipText: Translation.tr("Send file…")
             enabled: root._has("kdeconnect_share")
             onClicked: {
-                KdeConnectService.sendFile(root._devId)
+                ExtensionServices.get("phone-link", "KdeConnectService").sendFile(root._devId)
                 root._feedback(Translation.tr("Pick a file to send…"), true)
             }
         }
@@ -114,10 +113,10 @@ Item {
                 const looksUrl = /^https?:\/\//i.test(clip)
                     || /^[\w.-]+\.\w{2,}/.test(clip)
                 if (looksUrl) {
-                    KdeConnectService.shareUrl(root._devId, clip)
+                    ExtensionServices.get("phone-link", "KdeConnectService").shareUrl(root._devId, clip)
                     root._feedback(Translation.tr("Link shared"), true)
                 } else {
-                    KdeConnectService.shareText(root._devId, clip)
+                    ExtensionServices.get("phone-link", "KdeConnectService").shareText(root._devId, clip)
                     root._feedback(Translation.tr("Text shared"), true)
                 }
             }
@@ -130,7 +129,7 @@ Item {
             toolTipText: Translation.tr("Browse phone files (SFTP)")
             enabled: root._has("kdeconnect_sftp")
             onClicked: {
-                KdeConnectService.browseFiles(root._devId)
+                ExtensionServices.get("phone-link", "KdeConnectService").browseFiles(root._devId)
                 root._feedback(Translation.tr("Mounting SFTP storage…"), true)
             }
         }

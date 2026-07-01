@@ -1,7 +1,6 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import "../services" 1.0
 import QtQuick.Layouts
 import Quickshell
 import qs.modules.common
@@ -40,8 +39,8 @@ ContentPage {
     forceWidth: false
     signal goBack()
 
-    readonly property bool _ready: PhoneCameraService.available
-        && KdeConnectService.activeReachable
+    readonly property bool _ready: ExtensionServices.get("phone-link", "PhoneCameraService").available
+        && ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
 
     // Slide-up entrance when the sub-page overlay loads.
     opacity: 0
@@ -109,11 +108,11 @@ ContentPage {
             Layout.preferredHeight: 30
             Layout.preferredWidth: statusPill.implicitWidth + 22
             radius: Appearance.rounding.full
-            color: PhoneCameraService.running
+            color: ExtensionServices.get("phone-link", "PhoneCameraService").running
                 ? Appearance.colors.colPrimaryContainer
-                : (PhoneCameraService.available ? Appearance.colors.colLayer3
+                : (ExtensionServices.get("phone-link", "PhoneCameraService").available ? Appearance.colors.colLayer3
                                                 : Appearance.colors.colErrorContainer)
-            opacity: PhoneCameraService.connecting ? 0.6 : 1.0
+            opacity: ExtensionServices.get("phone-link", "PhoneCameraService").connecting ? 0.6 : 1.0
 
             RowLayout {
                 id: statusPill
@@ -122,17 +121,17 @@ ContentPage {
 
                 MaterialSymbol {
                     Layout.alignment: Qt.AlignVCenter
-                    text: PhoneCameraService.connecting ? "sync"
-                        : (PhoneCameraService.running ? "videocam" : "videocam_off")
+                    text: ExtensionServices.get("phone-link", "PhoneCameraService").connecting ? "sync"
+                        : (ExtensionServices.get("phone-link", "PhoneCameraService").running ? "videocam" : "videocam_off")
                     iconSize: 16
-                    color: PhoneCameraService.running
+                    color: ExtensionServices.get("phone-link", "PhoneCameraService").running
                         ? Appearance.colors.colOnPrimaryContainer
-                        : (PhoneCameraService.available ? Appearance.colors.colOnLayer3
+                        : (ExtensionServices.get("phone-link", "PhoneCameraService").available ? Appearance.colors.colOnLayer3
                                                         : Appearance.colors.colOnErrorContainer)
                     animateChange: true
 
                     RotationAnimation on rotation {
-                        running: PhoneCameraService.connecting
+                        running: ExtensionServices.get("phone-link", "PhoneCameraService").connecting
                         loops: Animation.Infinite
                         from: 0
                         to: 360
@@ -142,18 +141,18 @@ ContentPage {
 
                 StyledText {
                     Layout.alignment: Qt.AlignVCenter
-                    text: PhoneCameraService.connecting
+                    text: ExtensionServices.get("phone-link", "PhoneCameraService").connecting
                         ? Translation.tr("Connecting…")
-                        : (PhoneCameraService.running
+                        : (ExtensionServices.get("phone-link", "PhoneCameraService").running
                             ? Translation.tr("Active")
-                            : (PhoneCameraService.available
+                            : (ExtensionServices.get("phone-link", "PhoneCameraService").available
                                 ? Translation.tr("Ready")
                                 : Translation.tr("Unavailable")))
                     font.pixelSize: Appearance.font.pixelSize.smaller
                     font.weight: Font.DemiBold
-                    color: PhoneCameraService.running
+                    color: ExtensionServices.get("phone-link", "PhoneCameraService").running
                         ? Appearance.colors.colOnPrimaryContainer
-                        : (PhoneCameraService.available ? Appearance.colors.colOnLayer3
+                        : (ExtensionServices.get("phone-link", "PhoneCameraService").available ? Appearance.colors.colOnLayer3
                                                         : Appearance.colors.colOnErrorContainer)
                 }
             }
@@ -163,20 +162,20 @@ ContentPage {
     // ─── Error / offline banner ────────────────────────────
     WarningBox {
         Layout.fillWidth: true
-        visible: !PhoneCameraService.available || !KdeConnectService.activeReachable
-                || PhoneCameraService.lastError.length > 0
-        materialIcon: !PhoneCameraService.available ? "download"
-                    : !KdeConnectService.activeReachable ? "phonelink_off"
+        visible: !ExtensionServices.get("phone-link", "PhoneCameraService").available || !ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
+                || ExtensionServices.get("phone-link", "PhoneCameraService").lastError.length > 0
+        materialIcon: !ExtensionServices.get("phone-link", "PhoneCameraService").available ? "download"
+                    : !ExtensionServices.get("phone-link", "KdeConnectService").activeReachable ? "phonelink_off"
                     : "error"
-        text: !PhoneCameraService.available
+        text: !ExtensionServices.get("phone-link", "PhoneCameraService").available
             ? Translation.tr("DroidCam is not installed. Install droidcam-cli and the DroidCam Android app to use your phone camera as a webcam.")
-            : !KdeConnectService.activeReachable
+            : !ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
                 ? Translation.tr("No reachable KDE Connect device. Pair a device to use its camera.")
-                : Translation.tr("Camera error: %1").arg(PhoneCameraService.lastError)
+                : Translation.tr("Camera error: %1").arg(ExtensionServices.get("phone-link", "PhoneCameraService").lastError)
 
         // Inline install button (only when unavailable)
         RippleButton {
-            visible: !PhoneCameraService.available
+            visible: !ExtensionServices.get("phone-link", "PhoneCameraService").available
             Layout.alignment: Qt.AlignRight
             Layout.preferredHeight: 32
             buttonRadius: Appearance.rounding.full
@@ -217,13 +216,13 @@ ContentPage {
             Layout.fillWidth: true
             Layout.preferredHeight: 56
             buttonRadius: Appearance.rounding.normal
-            colBackground: PhoneCameraService.running
+            colBackground: ExtensionServices.get("phone-link", "PhoneCameraService").running
                 ? Appearance.colors.colErrorContainer
                 : Appearance.colors.colPrimaryContainer
-            colBackgroundHover: PhoneCameraService.running
+            colBackgroundHover: ExtensionServices.get("phone-link", "PhoneCameraService").running
                 ? Appearance.colors.colErrorContainerHover
                 : Appearance.colors.colPrimaryContainerHover
-            colRipple: PhoneCameraService.running
+            colRipple: ExtensionServices.get("phone-link", "PhoneCameraService").running
                 ? Appearance.colors.colErrorContainerActive
                 : Appearance.colors.colPrimaryContainerActive
             enabled: root._ready
@@ -233,16 +232,16 @@ ContentPage {
                 spacing: 10
                 MaterialSymbol {
                     Layout.alignment: Qt.AlignVCenter
-                    text: PhoneCameraService.connecting ? "sync"
-                        : (PhoneCameraService.running ? "stop_circle" : "play_circle")
+                    text: ExtensionServices.get("phone-link", "PhoneCameraService").connecting ? "sync"
+                        : (ExtensionServices.get("phone-link", "PhoneCameraService").running ? "stop_circle" : "play_circle")
                     iconSize: 24
-                    color: PhoneCameraService.running
+                    color: ExtensionServices.get("phone-link", "PhoneCameraService").running
                         ? Appearance.colors.colOnErrorContainer
                         : Appearance.colors.colOnPrimaryContainer
-                    fill: PhoneCameraService.running ? 1.0 : 0.0
+                    fill: ExtensionServices.get("phone-link", "PhoneCameraService").running ? 1.0 : 0.0
 
                     RotationAnimation on rotation {
-                        running: PhoneCameraService.connecting
+                        running: ExtensionServices.get("phone-link", "PhoneCameraService").connecting
                         loops: Animation.Infinite
                         from: 0; to: 360
                         duration: 1100
@@ -250,24 +249,24 @@ ContentPage {
                 }
                 StyledText {
                     Layout.fillWidth: true
-                    text: PhoneCameraService.connecting
+                    text: ExtensionServices.get("phone-link", "PhoneCameraService").connecting
                         ? Translation.tr("Connecting…")
-                        : (PhoneCameraService.running
+                        : (ExtensionServices.get("phone-link", "PhoneCameraService").running
                             ? Translation.tr("Stop camera")
                             : Translation.tr("Start camera"))
                     font.pixelSize: Appearance.font.pixelSize.normal
                     font.weight: Font.DemiBold
-                    color: PhoneCameraService.running
+                    color: ExtensionServices.get("phone-link", "PhoneCameraService").running
                         ? Appearance.colors.colOnErrorContainer
                         : Appearance.colors.colOnPrimaryContainer
                 }
                 Loader {
                     Layout.alignment: Qt.AlignVCenter
-                    active: PhoneCameraService.running && PhoneCameraService.videoDevice.length > 0
+                    active: ExtensionServices.get("phone-link", "PhoneCameraService").running && ExtensionServices.get("phone-link", "PhoneCameraService").videoDevice.length > 0
                     visible: active
                     sourceComponent: Component {
                         StyledText {
-                            text: PhoneCameraService.videoDevice
+                            text: ExtensionServices.get("phone-link", "PhoneCameraService").videoDevice
                             font.pixelSize: Appearance.font.pixelSize.smaller
                             color: Appearance.colors.colOnErrorContainer
                             opacity: 0.7
@@ -276,7 +275,7 @@ ContentPage {
                 }
             }
 
-            onClicked: PhoneCameraService.toggleCamera()
+            onClicked: ExtensionServices.get("phone-link", "PhoneCameraService").toggleCamera()
         }
 
         // Quick action row: Flip, Mirror, Open
@@ -309,7 +308,7 @@ ContentPage {
                         color: Appearance.colors.colOnLayer2
                     }
                 }
-                onClicked: PhoneCameraService.flipCamera()
+                onClicked: ExtensionServices.get("phone-link", "PhoneCameraService").flipCamera()
                 StyledToolTip {
                     text: Translation.tr("Switch between front and back camera")
                 }
@@ -342,7 +341,7 @@ ContentPage {
                         color: Appearance.colors.colOnLayer2
                     }
                 }
-                onClicked: PhoneCameraService.toggleMirror()
+                onClicked: ExtensionServices.get("phone-link", "PhoneCameraService").toggleMirror()
                 StyledToolTip {
                     text: Translation.tr("Flip the image horizontally")
                 }
@@ -354,8 +353,8 @@ ContentPage {
                 buttonRadius: Appearance.rounding.normal
                 colBackground: Appearance.colors.colLayer2
                 colBackgroundHover: Appearance.colors.colLayer2Hover
-                enabled: PhoneCameraService.running
-                    && PhoneCameraService.videoDevice.length > 0
+                enabled: ExtensionServices.get("phone-link", "PhoneCameraService").running
+                    && ExtensionServices.get("phone-link", "PhoneCameraService").videoDevice.length > 0
                 opacity: enabled ? 1.0 : 0.5
                 contentItem: RowLayout {
                     spacing: 6
@@ -408,7 +407,7 @@ ContentPage {
                 // Persist the preference so the next fresh start uses it,
                 // but do NOT restart the running stream.
                 // See AGENTS.md Phone Module Round 5.
-                PhoneCameraService.flipCamera()
+                ExtensionServices.get("phone-link", "PhoneCameraService").flipCamera()
             }
         }
 
@@ -458,7 +457,7 @@ ContentPage {
                 { displayName: "270°", value: 270 }
             ]
             currentValue: Config.options.phone.webcam.rotateDegrees
-            onSelected: (v) => PhoneCameraService.setRotation(v)
+            onSelected: (v) => ExtensionServices.get("phone-link", "PhoneCameraService").setRotation(v)
         }
     }
 

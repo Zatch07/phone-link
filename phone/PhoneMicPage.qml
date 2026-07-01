@@ -1,7 +1,6 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import "../services" 1.0
 import QtQuick.Layouts
 import Quickshell
 import qs.modules.common
@@ -37,8 +36,8 @@ ContentPage {
     forceWidth: false
     signal goBack()
 
-    readonly property bool _ready: PhoneMicService.available
-        && KdeConnectService.activeReachable
+    readonly property bool _ready: ExtensionServices.get("phone-link", "PhoneMicService").available
+        && ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
 
     property list<var> _peakHistory: []
 
@@ -107,13 +106,13 @@ ContentPage {
             Layout.preferredHeight: 30
             Layout.preferredWidth: micStatusPill.implicitWidth + 22
             radius: Appearance.rounding.full
-            color: PhoneMicService.running
-                ? (PhoneMicService.muted
+            color: ExtensionServices.get("phone-link", "PhoneMicService").running
+                ? (ExtensionServices.get("phone-link", "PhoneMicService").muted
                     ? Appearance.colors.colTertiaryContainer
                     : Appearance.colors.colPrimaryContainer)
-                : (PhoneMicService.available ? Appearance.colors.colLayer3
+                : (ExtensionServices.get("phone-link", "PhoneMicService").available ? Appearance.colors.colLayer3
                                             : Appearance.colors.colErrorContainer)
-            opacity: PhoneMicService.connecting ? 0.6 : 1.0
+            opacity: ExtensionServices.get("phone-link", "PhoneMicService").connecting ? 0.6 : 1.0
 
             RowLayout {
                 id: micStatusPill
@@ -122,21 +121,21 @@ ContentPage {
 
                 MaterialSymbol {
                     Layout.alignment: Qt.AlignVCenter
-                    text: PhoneMicService.connecting ? "sync"
-                        : (PhoneMicService.running
-                            ? (PhoneMicService.muted ? "mic_off" : "mic")
+                    text: ExtensionServices.get("phone-link", "PhoneMicService").connecting ? "sync"
+                        : (ExtensionServices.get("phone-link", "PhoneMicService").running
+                            ? (ExtensionServices.get("phone-link", "PhoneMicService").muted ? "mic_off" : "mic")
                             : "mic_off")
                     iconSize: 16
-                    color: PhoneMicService.running
-                        ? (PhoneMicService.muted
+                    color: ExtensionServices.get("phone-link", "PhoneMicService").running
+                        ? (ExtensionServices.get("phone-link", "PhoneMicService").muted
                             ? Appearance.colors.colOnTertiaryContainer
                             : Appearance.colors.colOnPrimaryContainer)
-                        : (PhoneMicService.available ? Appearance.colors.colOnLayer3
+                        : (ExtensionServices.get("phone-link", "PhoneMicService").available ? Appearance.colors.colOnLayer3
                                                     : Appearance.colors.colOnErrorContainer)
                     animateChange: true
 
                     RotationAnimation on rotation {
-                        running: PhoneMicService.connecting
+                        running: ExtensionServices.get("phone-link", "PhoneMicService").connecting
                         loops: Animation.Infinite
                         from: 0; to: 360
                         duration: 1100
@@ -145,20 +144,20 @@ ContentPage {
 
                 StyledText {
                     Layout.alignment: Qt.AlignVCenter
-                    text: PhoneMicService.connecting
+                    text: ExtensionServices.get("phone-link", "PhoneMicService").connecting
                         ? Translation.tr("Connecting…")
-                        : (PhoneMicService.running
-                            ? (PhoneMicService.muted ? Translation.tr("Muted") : Translation.tr("Active"))
-                            : (PhoneMicService.available
+                        : (ExtensionServices.get("phone-link", "PhoneMicService").running
+                            ? (ExtensionServices.get("phone-link", "PhoneMicService").muted ? Translation.tr("Muted") : Translation.tr("Active"))
+                            : (ExtensionServices.get("phone-link", "PhoneMicService").available
                                 ? Translation.tr("Ready")
                                 : Translation.tr("Unavailable")))
                     font.pixelSize: Appearance.font.pixelSize.smaller
                     font.weight: Font.DemiBold
-                    color: PhoneMicService.running
-                        ? (PhoneMicService.muted
+                    color: ExtensionServices.get("phone-link", "PhoneMicService").running
+                        ? (ExtensionServices.get("phone-link", "PhoneMicService").muted
                             ? Appearance.colors.colOnTertiaryContainer
                             : Appearance.colors.colOnPrimaryContainer)
-                        : (PhoneMicService.available ? Appearance.colors.colOnLayer3
+                        : (ExtensionServices.get("phone-link", "PhoneMicService").available ? Appearance.colors.colOnLayer3
                                                     : Appearance.colors.colOnErrorContainer)
                 }
             }
@@ -168,20 +167,20 @@ ContentPage {
     // ─── Error / offline banner ────────────────────────────
     WarningBox {
         Layout.fillWidth: true
-        visible: !PhoneMicService.available
-                || !KdeConnectService.activeReachable
-                || PhoneMicService.lastError.length > 0
-        materialIcon: !PhoneMicService.available ? "download"
-                    : !KdeConnectService.activeReachable ? "phonelink_off"
+        visible: !ExtensionServices.get("phone-link", "PhoneMicService").available
+                || !ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
+                || ExtensionServices.get("phone-link", "PhoneMicService").lastError.length > 0
+        materialIcon: !ExtensionServices.get("phone-link", "PhoneMicService").available ? "download"
+                    : !ExtensionServices.get("phone-link", "KdeConnectService").activeReachable ? "phonelink_off"
                     : "error"
-        text: !PhoneMicService.available
+        text: !ExtensionServices.get("phone-link", "PhoneMicService").available
             ? Translation.tr("DroidCam or pactl is not installed. Install droidcam-cli and pactl, plus the DroidCam Android app, to use your phone as a microphone.")
-            : !KdeConnectService.activeReachable
+            : !ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
                 ? Translation.tr("No reachable KDE Connect device. Pair a device to use its microphone.")
-                : Translation.tr("Microphone error: %1").arg(PhoneMicService.lastError)
+                : Translation.tr("Microphone error: %1").arg(ExtensionServices.get("phone-link", "PhoneMicService").lastError)
 
         RippleButton {
-            visible: !PhoneMicService.available
+            visible: !ExtensionServices.get("phone-link", "PhoneMicService").available
             Layout.alignment: Qt.AlignRight
             Layout.preferredHeight: 32
             buttonRadius: Appearance.rounding.full
@@ -222,13 +221,13 @@ ContentPage {
             Layout.fillWidth: true
             Layout.preferredHeight: 56
             buttonRadius: Appearance.rounding.normal
-            colBackground: PhoneMicService.running
+            colBackground: ExtensionServices.get("phone-link", "PhoneMicService").running
                 ? Appearance.colors.colErrorContainer
                 : Appearance.colors.colPrimaryContainer
-            colBackgroundHover: PhoneMicService.running
+            colBackgroundHover: ExtensionServices.get("phone-link", "PhoneMicService").running
                 ? Appearance.colors.colErrorContainerHover
                 : Appearance.colors.colPrimaryContainerHover
-            colRipple: PhoneMicService.running
+            colRipple: ExtensionServices.get("phone-link", "PhoneMicService").running
                 ? Appearance.colors.colErrorContainerActive
                 : Appearance.colors.colPrimaryContainerActive
             enabled: root._ready
@@ -238,16 +237,16 @@ ContentPage {
                 spacing: 10
                 MaterialSymbol {
                     Layout.alignment: Qt.AlignVCenter
-                    text: PhoneMicService.connecting ? "sync"
-                        : (PhoneMicService.running ? "stop_circle" : "play_circle")
+                    text: ExtensionServices.get("phone-link", "PhoneMicService").connecting ? "sync"
+                        : (ExtensionServices.get("phone-link", "PhoneMicService").running ? "stop_circle" : "play_circle")
                     iconSize: 24
-                    color: PhoneMicService.running
+                    color: ExtensionServices.get("phone-link", "PhoneMicService").running
                         ? Appearance.colors.colOnErrorContainer
                         : Appearance.colors.colOnPrimaryContainer
-                    fill: PhoneMicService.running ? 1.0 : 0.0
+                    fill: ExtensionServices.get("phone-link", "PhoneMicService").running ? 1.0 : 0.0
 
                     RotationAnimation on rotation {
-                        running: PhoneMicService.connecting
+                        running: ExtensionServices.get("phone-link", "PhoneMicService").connecting
                         loops: Animation.Infinite
                         from: 0; to: 360
                         duration: 1100
@@ -255,24 +254,24 @@ ContentPage {
                 }
                 StyledText {
                     Layout.fillWidth: true
-                    text: PhoneMicService.connecting
+                    text: ExtensionServices.get("phone-link", "PhoneMicService").connecting
                         ? Translation.tr("Connecting…")
-                        : (PhoneMicService.running
+                        : (ExtensionServices.get("phone-link", "PhoneMicService").running
                             ? Translation.tr("Stop microphone")
                             : Translation.tr("Start microphone"))
                     font.pixelSize: Appearance.font.pixelSize.normal
                     font.weight: Font.DemiBold
-                    color: PhoneMicService.running
+                    color: ExtensionServices.get("phone-link", "PhoneMicService").running
                         ? Appearance.colors.colOnErrorContainer
                         : Appearance.colors.colOnPrimaryContainer
                 }
                 Loader {
                     Layout.alignment: Qt.AlignVCenter
-                    active: PhoneMicService.running && PhoneMicService.pulseSource.length > 0
+                    active: ExtensionServices.get("phone-link", "PhoneMicService").running && ExtensionServices.get("phone-link", "PhoneMicService").pulseSource.length > 0
                     visible: active
                     sourceComponent: Component {
                         StyledText {
-                            text: PhoneMicService.pulseSource.split(".").slice(-2).join(".")
+                            text: ExtensionServices.get("phone-link", "PhoneMicService").pulseSource.split(".").slice(-2).join(".")
                             font.pixelSize: Appearance.font.pixelSize.smaller
                             color: Appearance.colors.colOnErrorContainer
                             opacity: 0.7
@@ -283,7 +282,7 @@ ContentPage {
                 }
             }
 
-            onClicked: PhoneMicService.toggleMic()
+            onClicked: ExtensionServices.get("phone-link", "PhoneMicService").toggleMic()
         }
 
         // Quick mute toggle (only when running)
@@ -291,41 +290,41 @@ ContentPage {
             Layout.fillWidth: true
             Layout.preferredHeight: 44
             buttonRadius: Appearance.rounding.normal
-            colBackground: PhoneMicService.muted
+            colBackground: ExtensionServices.get("phone-link", "PhoneMicService").muted
                 ? Appearance.colors.colTertiaryContainer
                 : Appearance.colors.colLayer2
-            colBackgroundHover: PhoneMicService.muted
+            colBackgroundHover: ExtensionServices.get("phone-link", "PhoneMicService").muted
                 ? Appearance.colors.colTertiaryContainerHover
                 : Appearance.colors.colLayer2Hover
-            enabled: PhoneMicService.running
+            enabled: ExtensionServices.get("phone-link", "PhoneMicService").running
             opacity: enabled ? 1.0 : 0.5
 
             contentItem: RowLayout {
                 spacing: 8
                 MaterialSymbol {
                     Layout.alignment: Qt.AlignVCenter
-                    text: PhoneMicService.muted ? "mic_off" : "mic"
+                    text: ExtensionServices.get("phone-link", "PhoneMicService").muted ? "mic_off" : "mic"
                     iconSize: 22
-                    color: PhoneMicService.muted
+                    color: ExtensionServices.get("phone-link", "PhoneMicService").muted
                         ? Appearance.colors.colOnTertiaryContainer
                         : Appearance.colors.colOnLayer2
-                    fill: PhoneMicService.muted ? 1.0 : 0.0
+                    fill: ExtensionServices.get("phone-link", "PhoneMicService").muted ? 1.0 : 0.0
                     animateChange: true
                 }
                 StyledText {
                     Layout.fillWidth: true
-                    text: PhoneMicService.muted
+                    text: ExtensionServices.get("phone-link", "PhoneMicService").muted
                         ? Translation.tr("Unmute microphone")
                         : Translation.tr("Mute microphone")
                     font.pixelSize: Appearance.font.pixelSize.small
                     font.weight: Font.DemiBold
-                    color: PhoneMicService.muted
+                    color: ExtensionServices.get("phone-link", "PhoneMicService").muted
                         ? Appearance.colors.colOnTertiaryContainer
                         : Appearance.colors.colOnLayer2
                 }
             }
 
-            onClicked: PhoneMicService.toggleMute()
+            onClicked: ExtensionServices.get("phone-link", "PhoneMicService").toggleMute()
         }
     }
 
@@ -344,9 +343,9 @@ ContentPage {
             usePercentTooltip: true
             onValueChanged: {
                 Config.options.phone.microphone.micGain = value
-                PhoneMicService.setGain(value)
+                ExtensionServices.get("phone-link", "PhoneMicService").setGain(value)
             }
-            enabled: PhoneMicService.running
+            enabled: ExtensionServices.get("phone-link", "PhoneMicService").running
             opacity: enabled ? 1.0 : 0.5
         }
 
@@ -354,12 +353,12 @@ ContentPage {
         ConfigSwitch {
             buttonIcon: "star"
             text: Translation.tr("Set as default input")
-            checked: PhoneMicService.defaultOverridden
-            enabled: PhoneMicService.running
+            checked: ExtensionServices.get("phone-link", "PhoneMicService").defaultOverridden
+            enabled: ExtensionServices.get("phone-link", "PhoneMicService").running
             opacity: enabled ? 1.0 : 0.5
             onCheckedChanged: {
-                if (checked) PhoneMicService.overrideDefaultSource()
-                else PhoneMicService.restoreDefaultSource()
+                if (checked) ExtensionServices.get("phone-link", "PhoneMicService").overrideDefaultSource()
+                else ExtensionServices.get("phone-link", "PhoneMicService").restoreDefaultSource()
             }
             StyledToolTip {
                 text: Translation.tr("Sets the phone as the default audio input while running. Other apps will use it automatically.")
@@ -413,16 +412,16 @@ ContentPage {
     ContentSection {
         icon: "equalizer"
         title: Translation.tr("Input level")
-        visible: PhoneMicService.running
+        visible: ExtensionServices.get("phone-link", "PhoneMicService").running
         height: visible ? implicitHeight : 0
 
         Timer {
             interval: 80
             repeat: true
-            running: PhoneMicService.running
+            running: ExtensionServices.get("phone-link", "PhoneMicService").running
             onTriggered: {
                 const arr = root._peakHistory.slice()
-                arr.push(PhoneMicService.peakVolumePercent)
+                arr.push(ExtensionServices.get("phone-link", "PhoneMicService").peakVolumePercent)
                 if (arr.length > 40) arr.shift()
                 root._peakHistory = arr
             }

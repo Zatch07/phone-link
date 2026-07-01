@@ -1,7 +1,6 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import "../services" 1.0
 import QtQuick.Layouts
 import Quickshell
 import qs.modules.common
@@ -27,8 +26,8 @@ ContentPage {
     forceWidth: false
     signal goBack()
 
-    readonly property bool _ready: KdeConnectService.scrcpyAvailable
-        && KdeConnectService.activeReachable
+    readonly property bool _ready: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable
+        && ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
 
     // Slide-up entrance when the sub-page overlay loads.
     opacity: 0
@@ -96,11 +95,11 @@ ContentPage {
             Layout.preferredHeight: 30
             Layout.preferredWidth: statusPill.implicitWidth + 22
             radius: Appearance.rounding.full
-            color: KdeConnectService.scrcpyRunning
+            color: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
                 ? Appearance.colors.colPrimaryContainer
-                : (KdeConnectService.scrcpyAvailable ? Appearance.colors.colLayer3
+                : (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable ? Appearance.colors.colLayer3
                                                      : Appearance.colors.colErrorContainer)
-            opacity: KdeConnectService.scrcpyRunning ? 1.0 : 0.8
+            opacity: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning ? 1.0 : 0.8
 
             RowLayout {
                 id: statusPill
@@ -111,27 +110,27 @@ ContentPage {
                     Layout.alignment: Qt.AlignVCenter
                     text: "smart_display"
                     iconSize: 16
-                    color: KdeConnectService.scrcpyRunning
+                    color: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
                         ? Appearance.colors.colOnPrimaryContainer
-                        : (KdeConnectService.scrcpyAvailable ? Appearance.colors.colOnLayer3
+                        : (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable ? Appearance.colors.colOnLayer3
                                                              : Appearance.colors.colOnErrorContainer)
                     animateChange: true
                 }
 
                 StyledText {
                     Layout.alignment: Qt.AlignVCenter
-                    text: KdeConnectService.scrcpyRunning
+                    text: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
                         ? Translation.tr("Running")
-                        : (KdeConnectService.scrcpyAvailable
-                            ? (KdeConnectService.activeReachable
+                        : (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable
+                            ? (ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
                                 ? Translation.tr("Ready")
                                 : Translation.tr("Offline"))
                             : Translation.tr("Unavailable"))
                     font.pixelSize: Appearance.font.pixelSize.smaller
                     font.weight: Font.DemiBold
-                    color: KdeConnectService.scrcpyRunning
+                    color: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
                         ? Appearance.colors.colOnPrimaryContainer
-                        : (KdeConnectService.scrcpyAvailable ? Appearance.colors.colOnLayer3
+                        : (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable ? Appearance.colors.colOnLayer3
                                                              : Appearance.colors.colOnErrorContainer)
                 }
             }
@@ -141,15 +140,15 @@ ContentPage {
     // ─── Error / offline banner ────────────────────────────
     WarningBox {
         Layout.fillWidth: true
-        visible: !KdeConnectService.scrcpyAvailable || !KdeConnectService.activeReachable
-        materialIcon: !KdeConnectService.scrcpyAvailable ? "download"
+        visible: !ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable || !ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
+        materialIcon: !ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable ? "download"
                     : "phonelink_off"
-        text: !KdeConnectService.scrcpyAvailable
+        text: !ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable
             ? Translation.tr("scrcpy is not installed. Install scrcpy and android-tools to mirror your phone screen.")
             : Translation.tr("No reachable KDE Connect device. Pair a device first.")
 
         RippleButton {
-            visible: !KdeConnectService.scrcpyAvailable
+            visible: !ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable
             Layout.alignment: Qt.AlignRight
             Layout.preferredHeight: 32
             buttonRadius: Appearance.rounding.full
@@ -188,13 +187,13 @@ ContentPage {
             Layout.fillWidth: true
             Layout.preferredHeight: 56
             buttonRadius: Appearance.rounding.normal
-            colBackground: KdeConnectService.scrcpyRunning
+            colBackground: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
                 ? Appearance.colors.colErrorContainer
                 : Appearance.colors.colPrimaryContainer
-            colBackgroundHover: KdeConnectService.scrcpyRunning
+            colBackgroundHover: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
                 ? Appearance.colors.colErrorContainerHover
                 : Appearance.colors.colPrimaryContainerHover
-            colRipple: KdeConnectService.scrcpyRunning
+            colRipple: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
                 ? Appearance.colors.colErrorContainerActive
                 : Appearance.colors.colPrimaryContainerActive
             enabled: root._ready
@@ -204,31 +203,31 @@ ContentPage {
                 spacing: 10
                 MaterialSymbol {
                     Layout.alignment: Qt.AlignVCenter
-                    text: KdeConnectService.scrcpyRunning ? "stop_circle" : "play_circle"
+                    text: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning ? "stop_circle" : "play_circle"
                     iconSize: 24
-                    color: KdeConnectService.scrcpyRunning
+                    color: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
                         ? Appearance.colors.colOnErrorContainer
                         : Appearance.colors.colOnPrimaryContainer
-                    fill: KdeConnectService.scrcpyRunning ? 1.0 : 0.0
+                    fill: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning ? 1.0 : 0.0
                 }
                 StyledText {
                     Layout.fillWidth: true
-                    text: KdeConnectService.scrcpyRunning
+                    text: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
                         ? Translation.tr("Kill scrcpy")
                         : Translation.tr("Launch scrcpy")
                     font.pixelSize: Appearance.font.pixelSize.normal
                     font.weight: Font.DemiBold
-                    color: KdeConnectService.scrcpyRunning
+                    color: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
                         ? Appearance.colors.colOnErrorContainer
                         : Appearance.colors.colOnPrimaryContainer
                 }
             }
 
             onClicked: {
-                if (KdeConnectService.scrcpyRunning)
-                    KdeConnectService.killScrcpy()
+                if (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning)
+                    ExtensionServices.get("phone-link", "KdeConnectService").killScrcpy()
                 else
-                    KdeConnectService.launchScrcpy(KdeConnectService.activeDeviceId)
+                    ExtensionServices.get("phone-link", "KdeConnectService").launchScrcpy(ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId)
             }
         }
 
@@ -243,7 +242,7 @@ ContentPage {
                 buttonRadius: Appearance.rounding.normal
                 colBackground: Appearance.colors.colLayer2
                 colBackgroundHover: Appearance.colors.colLayer2Hover
-                enabled: KdeConnectService.scrcpyRunning
+                enabled: ExtensionServices.get("phone-link", "KdeConnectService").scrcpyRunning
                 opacity: enabled ? 1.0 : 0.5
                 contentItem: RowLayout {
                     spacing: 6
@@ -261,7 +260,7 @@ ContentPage {
                         color: Appearance.colors.colOnLayer2
                     }
                 }
-                onClicked: KdeConnectService.focusScrcpyWindow()
+                onClicked: ExtensionServices.get("phone-link", "KdeConnectService").focusScrcpyWindow()
                 StyledToolTip {
                     text: Translation.tr("Raise the existing scrcpy window")
                 }
@@ -273,7 +272,7 @@ ContentPage {
                 buttonRadius: Appearance.rounding.normal
                 colBackground: Appearance.colors.colLayer2
                 colBackgroundHover: Appearance.colors.colLayer2Hover
-                enabled: KdeConnectService.activeReachable
+                enabled: ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
                 opacity: enabled ? 1.0 : 0.5
                 contentItem: RowLayout {
                     spacing: 6
@@ -291,7 +290,7 @@ ContentPage {
                         color: Appearance.colors.colOnLayer2
                     }
                 }
-                onClicked: KdeConnectService.promptWirelessConnect(KdeConnectService.activeDeviceId)
+                onClicked: ExtensionServices.get("phone-link", "KdeConnectService").promptWirelessConnect(ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId)
                 StyledToolTip {
                     text: Translation.tr("Prompt for IP:port and switch to wireless mode")
                 }
@@ -303,7 +302,7 @@ ContentPage {
                 buttonRadius: Appearance.rounding.normal
                 colBackground: Appearance.colors.colLayer2
                 colBackgroundHover: Appearance.colors.colLayer2Hover
-                enabled: KdeConnectService.activeReachable
+                enabled: ExtensionServices.get("phone-link", "KdeConnectService").activeReachable
                 opacity: enabled ? 1.0 : 0.5
                 contentItem: RowLayout {
                     spacing: 6
@@ -321,7 +320,7 @@ ContentPage {
                         color: Appearance.colors.colOnLayer2
                     }
                 }
-                onClicked: KdeConnectService.adbScreenshot()
+                onClicked: ExtensionServices.get("phone-link", "KdeConnectService").adbScreenshot()
                 StyledToolTip {
                     text: Translation.tr("Screenshot the phone via ADB")
                 }
@@ -462,7 +461,7 @@ ContentPage {
                 buttonRadius: Appearance.rounding.normal
                 colBackground: Appearance.colors.colLayer2
                 colBackgroundHover: Appearance.colors.colLayer2Hover
-                enabled: KdeConnectService.activeReachable && KdeConnectService.adbReachable
+                enabled: ExtensionServices.get("phone-link", "KdeConnectService").activeReachable && ExtensionServices.get("phone-link", "KdeConnectService").adbReachable
                 opacity: enabled ? 1.0 : 0.5
                 contentItem: RowLayout {
                     spacing: 6
@@ -480,7 +479,7 @@ ContentPage {
                         color: Appearance.colors.colOnLayer2
                     }
                 }
-                onClicked: KdeConnectService.enableWirelessAdb()
+                onClicked: ExtensionServices.get("phone-link", "KdeConnectService").enableWirelessAdb()
                 StyledToolTip {
                     text: Translation.tr("Runs adb tcpip 5555 on the USB-connected phone")
                 }
@@ -492,8 +491,8 @@ ContentPage {
                 buttonRadius: Appearance.rounding.normal
                 colBackground: Appearance.colors.colLayer2
                 colBackgroundHover: Appearance.colors.colLayer2Hover
-                enabled: KdeConnectService.activeDevice
-                            && (KdeConnectService.activeDevice.reachableAddresses || []).length > 0
+                enabled: ExtensionServices.get("phone-link", "KdeConnectService").activeDevice
+                            && (ExtensionServices.get("phone-link", "KdeConnectService").activeDevice.reachableAddresses || []).length > 0
                 opacity: enabled ? 1.0 : 0.5
                 contentItem: RowLayout {
                     spacing: 6
@@ -512,7 +511,7 @@ ContentPage {
                     }
                 }
                 onClicked: {
-                    const ip = (KdeConnectService.activeDevice.reachableAddresses || [])[0] || ""
+                    const ip = (ExtensionServices.get("phone-link", "KdeConnectService").activeDevice.reachableAddresses || [])[0] || ""
                     if (ip) Quickshell.clipboardText = ip
                 }
                 StyledToolTip {
