@@ -95,6 +95,14 @@ Singleton {
             property string cameraFacing: "back"
         }
 
+        property bool runSetupScript: typeof ExtensionManager !== "undefined" ? (ExtensionManager.extensionConfigs["phone-link"]?.run_setup_script ?? false) : false
+        onRunSetupScriptChanged: {
+            if (runSetupScript && typeof ExtensionManager !== "undefined") {
+                ExtensionManager.setExtensionConfig("phone-link", "run_setup_script", false)
+                Quickshell.execDetached(["kitty", "--", "bash", "-c", "cd ~/.config/illogical-impulse/extensions/installed/phone-link && ./install_dependencies.sh; echo ''; read -p 'Press Enter to exit'"])
+            }
+        }
+
         property QtObject microphone: QtObject {
             property string connection: "usb"
             property string wifiIp: ""
