@@ -35,6 +35,13 @@
         { "displayName": "720p", "value": "1280x720" },
         { "displayName": "1080p", "value": "1920x1080" }
       ]
+    },
+    "run_setup_script": {
+      "type": "action",
+      "label": "Run Dependencies Script",
+      "icon": "terminal",
+      "buttonText": "Run in Kitty",
+      "exec": "kitty -- bash -c 'cd ~/.config/illogical-impulse/extensions/installed/phone-link && ./install_dependencies.sh; echo \"\"; read -p \"Press Enter to exit\"'"
     }
   }
 }
