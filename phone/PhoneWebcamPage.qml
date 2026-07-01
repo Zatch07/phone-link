@@ -44,8 +44,8 @@ ContentPage {
         z: -1
     }
 
-    readonly property bool _ready: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).available
-        && (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable
+    readonly property bool _ready: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).available
+        && (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).activeReachable
 
     // Slide-up entrance when the sub-page overlay loads.
     opacity: 0
@@ -113,11 +113,11 @@ ContentPage {
             Layout.preferredHeight: 30
             Layout.preferredWidth: statusPill.implicitWidth + 22
             radius: Appearance.rounding.full
-            color: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).running
+            color: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).running
                 ? Appearance.colors.colPrimaryContainer
-                : ((ExtensionServices.get("phone-link", "PhoneCameraService") || {}).available ? Appearance.colors.colLayer3
+                : ((ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).available ? Appearance.colors.colLayer3
                                                 : Appearance.colors.colErrorContainer)
-            opacity: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).connecting ? 0.6 : 1.0
+            opacity: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).connecting ? 0.6 : 1.0
 
             RowLayout {
                 id: statusPill
@@ -126,17 +126,17 @@ ContentPage {
 
                 MaterialSymbol {
                     Layout.alignment: Qt.AlignVCenter
-                    text: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).connecting ? "sync"
-                        : ((ExtensionServices.get("phone-link", "PhoneCameraService") || {}).running ? "videocam" : "videocam_off")
+                    text: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).connecting ? "sync"
+                        : ((ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).running ? "videocam" : "videocam_off")
                     iconSize: 16
-                    color: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).running
+                    color: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).running
                         ? Appearance.colors.colOnPrimaryContainer
-                        : ((ExtensionServices.get("phone-link", "PhoneCameraService") || {}).available ? Appearance.colors.colOnLayer3
+                        : ((ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).available ? Appearance.colors.colOnLayer3
                                                         : Appearance.colors.colOnErrorContainer)
                     animateChange: true
 
                     RotationAnimation on rotation {
-                        running: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).connecting
+                        running: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).connecting
                         loops: Animation.Infinite
                         from: 0
                         to: 360
@@ -146,18 +146,18 @@ ContentPage {
 
                 StyledText {
                     Layout.alignment: Qt.AlignVCenter
-                    text: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).connecting
+                    text: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).connecting
                         ? Translation.tr("Connecting…")
-                        : ((ExtensionServices.get("phone-link", "PhoneCameraService") || {}).running
+                        : ((ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).running
                             ? Translation.tr("Active")
-                            : ((ExtensionServices.get("phone-link", "PhoneCameraService") || {}).available
+                            : ((ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).available
                                 ? Translation.tr("Ready")
                                 : Translation.tr("Unavailable")))
                     font.pixelSize: Appearance.font.pixelSize.smaller
                     font.weight: Font.DemiBold
-                    color: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).running
+                    color: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).running
                         ? Appearance.colors.colOnPrimaryContainer
-                        : ((ExtensionServices.get("phone-link", "PhoneCameraService") || {}).available ? Appearance.colors.colOnLayer3
+                        : ((ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).available ? Appearance.colors.colOnLayer3
                                                         : Appearance.colors.colOnErrorContainer)
                 }
             }
@@ -167,20 +167,20 @@ ContentPage {
     // ─── Error / offline banner ────────────────────────────
     WarningBox {
         Layout.fillWidth: true
-        visible: !(ExtensionServices.get("phone-link", "PhoneCameraService") || {}).available || !(ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable
-                || (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).lastError.length > 0
-        materialIcon: !(ExtensionServices.get("phone-link", "PhoneCameraService") || {}).available ? "download"
-                    : !(ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable ? "phonelink_off"
+        visible: !(ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).available || !(ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).activeReachable
+                || (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).lastError.length > 0
+        materialIcon: !(ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).available ? "download"
+                    : !(ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).activeReachable ? "phonelink_off"
                     : "error"
-        text: !(ExtensionServices.get("phone-link", "PhoneCameraService") || {}).available
+        text: !(ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).available
             ? Translation.tr("DroidCam is not installed. Install droidcam-cli and the DroidCam Android app to use your phone camera as a webcam.")
-            : !(ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable
+            : !(ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).activeReachable
                 ? Translation.tr("No reachable KDE Connect device. Pair a device to use its camera.")
-                : Translation.tr("Camera error: %1").arg((ExtensionServices.get("phone-link", "PhoneCameraService") || {}).lastError)
+                : Translation.tr("Camera error: %1").arg((ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).lastError)
 
         // Inline install button (only when unavailable)
         RippleButton {
-            visible: !(ExtensionServices.get("phone-link", "PhoneCameraService") || {}).available
+            visible: !(ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).available
             Layout.alignment: Qt.AlignRight
             Layout.preferredHeight: 32
             buttonRadius: Appearance.rounding.full
@@ -221,13 +221,13 @@ ContentPage {
             Layout.fillWidth: true
             Layout.preferredHeight: 56
             buttonRadius: Appearance.rounding.normal
-            colBackground: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).running
+            colBackground: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).running
                 ? Appearance.colors.colErrorContainer
                 : Appearance.colors.colPrimaryContainer
-            colBackgroundHover: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).running
+            colBackgroundHover: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).running
                 ? Appearance.colors.colErrorContainerHover
                 : Appearance.colors.colPrimaryContainerHover
-            colRipple: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).running
+            colRipple: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).running
                 ? Appearance.colors.colErrorContainerActive
                 : Appearance.colors.colPrimaryContainerActive
             enabled: root._ready
@@ -237,16 +237,16 @@ ContentPage {
                 spacing: 10
                 MaterialSymbol {
                     Layout.alignment: Qt.AlignVCenter
-                    text: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).connecting ? "sync"
-                        : ((ExtensionServices.get("phone-link", "PhoneCameraService") || {}).running ? "stop_circle" : "play_circle")
+                    text: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).connecting ? "sync"
+                        : ((ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).running ? "stop_circle" : "play_circle")
                     iconSize: 24
-                    color: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).running
+                    color: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).running
                         ? Appearance.colors.colOnErrorContainer
                         : Appearance.colors.colOnPrimaryContainer
-                    fill: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).running ? 1.0 : 0.0
+                    fill: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).running ? 1.0 : 0.0
 
                     RotationAnimation on rotation {
-                        running: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).connecting
+                        running: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).connecting
                         loops: Animation.Infinite
                         from: 0; to: 360
                         duration: 1100
@@ -254,24 +254,24 @@ ContentPage {
                 }
                 StyledText {
                     Layout.fillWidth: true
-                    text: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).connecting
+                    text: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).connecting
                         ? Translation.tr("Connecting…")
-                        : ((ExtensionServices.get("phone-link", "PhoneCameraService") || {}).running
+                        : ((ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).running
                             ? Translation.tr("Stop camera")
                             : Translation.tr("Start camera"))
                     font.pixelSize: Appearance.font.pixelSize.normal
                     font.weight: Font.DemiBold
-                    color: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).running
+                    color: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).running
                         ? Appearance.colors.colOnErrorContainer
                         : Appearance.colors.colOnPrimaryContainer
                 }
                 Loader {
                     Layout.alignment: Qt.AlignVCenter
-                    active: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).running && (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).videoDevice.length > 0
+                    active: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).running && (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).videoDevice.length > 0
                     visible: active
                     sourceComponent: Component {
                         StyledText {
-                            text: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).videoDevice
+                            text: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).videoDevice
                             font.pixelSize: Appearance.font.pixelSize.smaller
                             color: Appearance.colors.colOnErrorContainer
                             opacity: 0.7
@@ -280,7 +280,7 @@ ContentPage {
                 }
             }
 
-            onClicked: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).toggleCamera()
+            onClicked: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).toggleCamera()
         }
 
         // Quick action row: Flip, Mirror, Open
@@ -313,7 +313,7 @@ ContentPage {
                         color: Appearance.colors.colOnLayer2
                     }
                 }
-                onClicked: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).flipCamera()
+                onClicked: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).flipCamera()
                 StyledToolTip {
                     text: Translation.tr("Switch between front and back camera")
                 }
@@ -338,7 +338,7 @@ ContentPage {
                     }
                     StyledText {
                         Layout.alignment: Qt.AlignVCenter
-                        text: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.mirrorHorizontally
+                        text: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.mirrorHorizontally
                             ? Translation.tr("Unmirror")
                             : Translation.tr("Mirror")
                         font.pixelSize: Appearance.font.pixelSize.small
@@ -346,7 +346,7 @@ ContentPage {
                         color: Appearance.colors.colOnLayer2
                     }
                 }
-                onClicked: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).toggleMirror()
+                onClicked: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).toggleMirror()
                 StyledToolTip {
                     text: Translation.tr("Flip the image horizontally")
                 }
@@ -358,8 +358,8 @@ ContentPage {
                 buttonRadius: Appearance.rounding.normal
                 colBackground: Appearance.colors.colLayer2
                 colBackgroundHover: Appearance.colors.colLayer2Hover
-                enabled: (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).running
-                    && (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).videoDevice.length > 0
+                enabled: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).running
+                    && (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).videoDevice.length > 0
                 opacity: enabled ? 1.0 : 0.5
                 contentItem: RowLayout {
                     spacing: 6
@@ -405,14 +405,14 @@ ContentPage {
                 { displayName: Translation.tr("Front"), icon: "camera_front", value: "front" },
                 { displayName: Translation.tr("Back"), icon: "camera_rear", value: "back" }
             ]
-            currentValue: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.cameraFacing
+            currentValue: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.cameraFacing
             onSelected: (v) => {
-                (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.cameraFacing = v
+                (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.cameraFacing = v
                 // DroidCam does not have a CLI flag to switch cameras.
                 // Persist the preference so the next fresh start uses it,
                 // but do NOT restart the running stream.
                 // See AGENTS.md Phone Module Round 5.
-                (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).flipCamera()
+                (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).flipCamera()
             }
         }
 
@@ -424,8 +424,8 @@ ContentPage {
                 { displayName: Translation.tr("Wi-Fi"), icon: "wifi", value: "wifi" },
                 { displayName: Translation.tr("USB"), icon: "usb", value: "usb" }
             ]
-            currentValue: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.connection
-            onSelected: (v) => (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.connection = v
+            currentValue: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.connection
+            onSelected: (v) => (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.connection = v
         }
 
         // Resolution
@@ -437,17 +437,17 @@ ContentPage {
                 { displayName: "720p", value: "1280x720" },
                 { displayName: "1080p", value: "1920x1080" }
             ]
-            currentValue: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.resolution
-            onSelected: (v) => (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.resolution = v
+            currentValue: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.resolution
+            onSelected: (v) => (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.resolution = v
         }
 
         // Mirror toggle
         ConfigSwitch {
             buttonIcon: "flip"
             text: Translation.tr("Mirror horizontally")
-            checked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.mirrorHorizontally
+            checked: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.mirrorHorizontally
             onCheckedChanged: {
-                (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.mirrorHorizontally = checked
+                (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.mirrorHorizontally = checked
             }
         }
 
@@ -461,8 +461,8 @@ ContentPage {
                 { displayName: "180°", value: 180 },
                 { displayName: "270°", value: 270 }
             ]
-            currentValue: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.rotateDegrees
-            onSelected: (v) => (ExtensionServices.get("phone-link", "PhoneCameraService") || {}).setRotation(v)
+            currentValue: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.rotateDegrees
+            onSelected: (v) => (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).setRotation(v)
         }
     }
 
@@ -470,15 +470,15 @@ ContentPage {
     ContentSection {
         icon: "wifi"
         title: Translation.tr("Connection")
-        visible: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.connection === "wifi"
+        visible: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.connection === "wifi"
 
         ConfigTextField {
             text: Translation.tr("Phone IP")
             icon: "ip"
             placeholderText: Translation.tr("Auto-detect from KDE Connect")
-            inputText: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.wifiIp
+            inputText: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.wifiIp
             onEditingFinished: {
-                (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.wifiIp = inputText.trim()
+                (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.wifiIp = inputText.trim()
             }
             tooltip: Translation.tr("Leave empty to auto-detect from KDE Connect. Set explicitly if auto-detect fails.")
         }
@@ -486,10 +486,10 @@ ContentPage {
         ConfigSpinBox {
             text: Translation.tr("Port")
             icon: "router"
-            value: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.port
+            value: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.port
             from: 1024
             to: 65535
-            onValueChanged: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.port = value
+            onValueChanged: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.port = value
         }
     }
 
@@ -503,8 +503,8 @@ ContentPage {
             buttonIcon: "speed"
             from: 10
             to: 60
-            value: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.fps
-            onValueChanged: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.webcam.fps = value
+            value: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.fps
+            onValueChanged: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.fps = value
             usePercentTooltip: false
         }
     }

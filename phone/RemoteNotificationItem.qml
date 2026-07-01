@@ -115,7 +115,7 @@ Item {
             }
         }
         onFinished: () => {
-            (ExtensionServices.get("phone-link", "KdeConnectService") || {}).discardNotification(root.publicId);
+            (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).discardNotification(root.publicId);
         }
     }
 
@@ -144,7 +144,7 @@ Item {
             // even without an intent — we extract the package from the
             // internalId and use `adb shell monkey -p <pkg>` to launch it.
             if (mouse.button === Qt.LeftButton) {
-                (ExtensionServices.get("phone-link", "KdeConnectService") || {}).openNotificationIntent(root.publicId);
+                (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).openNotificationIntent(root.publicId);
             }
         }
         onDraggingChanged: () => {
@@ -381,7 +381,7 @@ Item {
                                             color: Appearance.colors.colOnLayer4
                                         }
                                         onClicked: {
-                                            (ExtensionServices.get("phone-link", "KdeConnectService") || {}).sendAction((ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeDeviceId, root.publicId, modelData.key);
+                                            (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).sendAction((ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).activeDeviceId, root.publicId, modelData.key);
                                         }
                                     }
                                 }
@@ -459,7 +459,7 @@ Item {
                                     onClicked: {
                                         if (!root.replyDraft)
                                             return;
-                                        (ExtensionServices.get("phone-link", "KdeConnectService") || {}).replyNotification(root.publicId, root.replyDraft);
+                                        (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).replyNotification(root.publicId, root.replyDraft);
                                         root.replyDraft = "";
                                         replyField.text = "";
                                         root.replyJustSent = true;
@@ -547,7 +547,7 @@ Item {
                                     }
                                     buttonText: Translation.tr("Open on phone")
                                     onClicked: {
-                                        (ExtensionServices.get("phone-link", "KdeConnectService") || {}).openNotificationIntent(root.publicId);
+                                        (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).openNotificationIntent(root.publicId);
                                     }
                                     contentItem: MaterialSymbol {
                                         iconSize: Appearance.font.pixelSize.larger

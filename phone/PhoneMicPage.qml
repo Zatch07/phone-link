@@ -41,8 +41,8 @@ ContentPage {
         z: -1
     }
 
-    readonly property bool _ready: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).available
-        && (ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable
+    readonly property bool _ready: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).available
+        && (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).activeReachable
 
     property list<var> _peakHistory: []
 
@@ -111,13 +111,13 @@ ContentPage {
             Layout.preferredHeight: 30
             Layout.preferredWidth: micStatusPill.implicitWidth + 22
             radius: Appearance.rounding.full
-            color: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).running
-                ? ((ExtensionServices.get("phone-link", "PhoneMicService") || {}).muted
+            color: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running
+                ? ((ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).muted
                     ? Appearance.colors.colTertiaryContainer
                     : Appearance.colors.colPrimaryContainer)
-                : ((ExtensionServices.get("phone-link", "PhoneMicService") || {}).available ? Appearance.colors.colLayer3
+                : ((ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).available ? Appearance.colors.colLayer3
                                             : Appearance.colors.colErrorContainer)
-            opacity: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).connecting ? 0.6 : 1.0
+            opacity: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).connecting ? 0.6 : 1.0
 
             RowLayout {
                 id: micStatusPill
@@ -126,21 +126,21 @@ ContentPage {
 
                 MaterialSymbol {
                     Layout.alignment: Qt.AlignVCenter
-                    text: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).connecting ? "sync"
-                        : ((ExtensionServices.get("phone-link", "PhoneMicService") || {}).running
-                            ? ((ExtensionServices.get("phone-link", "PhoneMicService") || {}).muted ? "mic_off" : "mic")
+                    text: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).connecting ? "sync"
+                        : ((ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running
+                            ? ((ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).muted ? "mic_off" : "mic")
                             : "mic_off")
                     iconSize: 16
-                    color: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).running
-                        ? ((ExtensionServices.get("phone-link", "PhoneMicService") || {}).muted
+                    color: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running
+                        ? ((ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).muted
                             ? Appearance.colors.colOnTertiaryContainer
                             : Appearance.colors.colOnPrimaryContainer)
-                        : ((ExtensionServices.get("phone-link", "PhoneMicService") || {}).available ? Appearance.colors.colOnLayer3
+                        : ((ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).available ? Appearance.colors.colOnLayer3
                                                     : Appearance.colors.colOnErrorContainer)
                     animateChange: true
 
                     RotationAnimation on rotation {
-                        running: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).connecting
+                        running: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).connecting
                         loops: Animation.Infinite
                         from: 0; to: 360
                         duration: 1100
@@ -149,20 +149,20 @@ ContentPage {
 
                 StyledText {
                     Layout.alignment: Qt.AlignVCenter
-                    text: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).connecting
+                    text: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).connecting
                         ? Translation.tr("Connecting…")
-                        : ((ExtensionServices.get("phone-link", "PhoneMicService") || {}).running
-                            ? ((ExtensionServices.get("phone-link", "PhoneMicService") || {}).muted ? Translation.tr("Muted") : Translation.tr("Active"))
-                            : ((ExtensionServices.get("phone-link", "PhoneMicService") || {}).available
+                        : ((ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running
+                            ? ((ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).muted ? Translation.tr("Muted") : Translation.tr("Active"))
+                            : ((ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).available
                                 ? Translation.tr("Ready")
                                 : Translation.tr("Unavailable")))
                     font.pixelSize: Appearance.font.pixelSize.smaller
                     font.weight: Font.DemiBold
-                    color: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).running
-                        ? ((ExtensionServices.get("phone-link", "PhoneMicService") || {}).muted
+                    color: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running
+                        ? ((ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).muted
                             ? Appearance.colors.colOnTertiaryContainer
                             : Appearance.colors.colOnPrimaryContainer)
-                        : ((ExtensionServices.get("phone-link", "PhoneMicService") || {}).available ? Appearance.colors.colOnLayer3
+                        : ((ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).available ? Appearance.colors.colOnLayer3
                                                     : Appearance.colors.colOnErrorContainer)
                 }
             }
@@ -172,20 +172,20 @@ ContentPage {
     // ─── Error / offline banner ────────────────────────────
     WarningBox {
         Layout.fillWidth: true
-        visible: !(ExtensionServices.get("phone-link", "PhoneMicService") || {}).available
-                || !(ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable
-                || (ExtensionServices.get("phone-link", "PhoneMicService") || {}).lastError.length > 0
-        materialIcon: !(ExtensionServices.get("phone-link", "PhoneMicService") || {}).available ? "download"
-                    : !(ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable ? "phonelink_off"
+        visible: !(ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).available
+                || !(ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).activeReachable
+                || (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).lastError.length > 0
+        materialIcon: !(ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).available ? "download"
+                    : !(ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).activeReachable ? "phonelink_off"
                     : "error"
-        text: !(ExtensionServices.get("phone-link", "PhoneMicService") || {}).available
+        text: !(ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).available
             ? Translation.tr("DroidCam or pactl is not installed. Install droidcam-cli and pactl, plus the DroidCam Android app, to use your phone as a microphone.")
-            : !(ExtensionServices.get("phone-link", "KdeConnectService") || {}).activeReachable
+            : !(ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).activeReachable
                 ? Translation.tr("No reachable KDE Connect device. Pair a device to use its microphone.")
-                : Translation.tr("Microphone error: %1").arg((ExtensionServices.get("phone-link", "PhoneMicService") || {}).lastError)
+                : Translation.tr("Microphone error: %1").arg((ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).lastError)
 
         RippleButton {
-            visible: !(ExtensionServices.get("phone-link", "PhoneMicService") || {}).available
+            visible: !(ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).available
             Layout.alignment: Qt.AlignRight
             Layout.preferredHeight: 32
             buttonRadius: Appearance.rounding.full
@@ -226,13 +226,13 @@ ContentPage {
             Layout.fillWidth: true
             Layout.preferredHeight: 56
             buttonRadius: Appearance.rounding.normal
-            colBackground: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).running
+            colBackground: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running
                 ? Appearance.colors.colErrorContainer
                 : Appearance.colors.colPrimaryContainer
-            colBackgroundHover: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).running
+            colBackgroundHover: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running
                 ? Appearance.colors.colErrorContainerHover
                 : Appearance.colors.colPrimaryContainerHover
-            colRipple: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).running
+            colRipple: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running
                 ? Appearance.colors.colErrorContainerActive
                 : Appearance.colors.colPrimaryContainerActive
             enabled: root._ready
@@ -242,16 +242,16 @@ ContentPage {
                 spacing: 10
                 MaterialSymbol {
                     Layout.alignment: Qt.AlignVCenter
-                    text: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).connecting ? "sync"
-                        : ((ExtensionServices.get("phone-link", "PhoneMicService") || {}).running ? "stop_circle" : "play_circle")
+                    text: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).connecting ? "sync"
+                        : ((ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running ? "stop_circle" : "play_circle")
                     iconSize: 24
-                    color: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).running
+                    color: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running
                         ? Appearance.colors.colOnErrorContainer
                         : Appearance.colors.colOnPrimaryContainer
-                    fill: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).running ? 1.0 : 0.0
+                    fill: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running ? 1.0 : 0.0
 
                     RotationAnimation on rotation {
-                        running: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).connecting
+                        running: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).connecting
                         loops: Animation.Infinite
                         from: 0; to: 360
                         duration: 1100
@@ -259,24 +259,24 @@ ContentPage {
                 }
                 StyledText {
                     Layout.fillWidth: true
-                    text: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).connecting
+                    text: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).connecting
                         ? Translation.tr("Connecting…")
-                        : ((ExtensionServices.get("phone-link", "PhoneMicService") || {}).running
+                        : ((ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running
                             ? Translation.tr("Stop microphone")
                             : Translation.tr("Start microphone"))
                     font.pixelSize: Appearance.font.pixelSize.normal
                     font.weight: Font.DemiBold
-                    color: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).running
+                    color: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running
                         ? Appearance.colors.colOnErrorContainer
                         : Appearance.colors.colOnPrimaryContainer
                 }
                 Loader {
                     Layout.alignment: Qt.AlignVCenter
-                    active: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).running && (ExtensionServices.get("phone-link", "PhoneMicService") || {}).pulseSource.length > 0
+                    active: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running && (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).pulseSource.length > 0
                     visible: active
                     sourceComponent: Component {
                         StyledText {
-                            text: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).pulseSource.split(".").slice(-2).join(".")
+                            text: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).pulseSource.split(".").slice(-2).join(".")
                             font.pixelSize: Appearance.font.pixelSize.smaller
                             color: Appearance.colors.colOnErrorContainer
                             opacity: 0.7
@@ -287,7 +287,7 @@ ContentPage {
                 }
             }
 
-            onClicked: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).toggleMic()
+            onClicked: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).toggleMic()
         }
 
         // Quick mute toggle (only when running)
@@ -295,41 +295,41 @@ ContentPage {
             Layout.fillWidth: true
             Layout.preferredHeight: 44
             buttonRadius: Appearance.rounding.normal
-            colBackground: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).muted
+            colBackground: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).muted
                 ? Appearance.colors.colTertiaryContainer
                 : Appearance.colors.colLayer2
-            colBackgroundHover: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).muted
+            colBackgroundHover: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).muted
                 ? Appearance.colors.colTertiaryContainerHover
                 : Appearance.colors.colLayer2Hover
-            enabled: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).running
+            enabled: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running
             opacity: enabled ? 1.0 : 0.5
 
             contentItem: RowLayout {
                 spacing: 8
                 MaterialSymbol {
                     Layout.alignment: Qt.AlignVCenter
-                    text: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).muted ? "mic_off" : "mic"
+                    text: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).muted ? "mic_off" : "mic"
                     iconSize: 22
-                    color: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).muted
+                    color: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).muted
                         ? Appearance.colors.colOnTertiaryContainer
                         : Appearance.colors.colOnLayer2
-                    fill: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).muted ? 1.0 : 0.0
+                    fill: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).muted ? 1.0 : 0.0
                     animateChange: true
                 }
                 StyledText {
                     Layout.fillWidth: true
-                    text: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).muted
+                    text: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).muted
                         ? Translation.tr("Unmute microphone")
                         : Translation.tr("Mute microphone")
                     font.pixelSize: Appearance.font.pixelSize.small
                     font.weight: Font.DemiBold
-                    color: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).muted
+                    color: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).muted
                         ? Appearance.colors.colOnTertiaryContainer
                         : Appearance.colors.colOnLayer2
                 }
             }
 
-            onClicked: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).toggleMute()
+            onClicked: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).toggleMute()
         }
     }
 
@@ -344,13 +344,13 @@ ContentPage {
             buttonIcon: "volume_up"
             from: 0
             to: 200
-            value: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.microphone.micGain
+            value: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.microphone.micGain
             usePercentTooltip: true
             onValueChanged: {
-                (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.microphone.micGain = value
-                (ExtensionServices.get("phone-link", "PhoneMicService") || {}).setGain(value)
+                (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.microphone.micGain = value
+                (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).setGain(value)
             }
-            enabled: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).running
+            enabled: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running
             opacity: enabled ? 1.0 : 0.5
         }
 
@@ -358,12 +358,12 @@ ContentPage {
         ConfigSwitch {
             buttonIcon: "star"
             text: Translation.tr("Set as default input")
-            checked: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).defaultOverridden
-            enabled: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).running
+            checked: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).defaultOverridden
+            enabled: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running
             opacity: enabled ? 1.0 : 0.5
             onCheckedChanged: {
-                if (checked) (ExtensionServices.get("phone-link", "PhoneMicService") || {}).overrideDefaultSource()
-                else (ExtensionServices.get("phone-link", "PhoneMicService") || {}).restoreDefaultSource()
+                if (checked) (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).overrideDefaultSource()
+                else (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).restoreDefaultSource()
             }
             StyledToolTip {
                 text: Translation.tr("Sets the phone as the default audio input while running. Other apps will use it automatically.")
@@ -379,9 +379,9 @@ ContentPage {
         ConfigSwitch {
             buttonIcon: "noise_aware"
             text: Translation.tr("Noise suppression")
-            checked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.microphone.noiseSuppression
+            checked: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.microphone.noiseSuppression
             onCheckedChanged: {
-                (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.microphone.noiseSuppression = checked
+                (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.microphone.noiseSuppression = checked
             }
             StyledToolTip {
                 text: Translation.tr("Reduces background noise from the microphone stream")
@@ -391,9 +391,9 @@ ContentPage {
         ConfigSwitch {
             buttonIcon: "record_voice_over"
             text: Translation.tr("Echo cancellation")
-            checked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.microphone.echoCancellation
+            checked: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.microphone.echoCancellation
             onCheckedChanged: {
-                (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.microphone.echoCancellation = checked
+                (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.microphone.echoCancellation = checked
             }
             StyledToolTip {
                 text: Translation.tr("Cancels echo so speakers don't feed back into the mic")
@@ -403,9 +403,9 @@ ContentPage {
         ConfigSwitch {
             buttonIcon: "trending_up"
             text: Translation.tr("Auto gain control")
-            checked: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.microphone.autoGainControl
+            checked: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.microphone.autoGainControl
             onCheckedChanged: {
-                (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.microphone.autoGainControl = checked
+                (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.microphone.autoGainControl = checked
             }
             StyledToolTip {
                 text: Translation.tr("Automatically adjusts the input level based on signal volume")
@@ -417,16 +417,16 @@ ContentPage {
     ContentSection {
         icon: "equalizer"
         title: Translation.tr("Input level")
-        visible: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).running
+        visible: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running
         height: visible ? implicitHeight : 0
 
         Timer {
             interval: 80
             repeat: true
-            running: (ExtensionServices.get("phone-link", "PhoneMicService") || {}).running
+            running: (ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).running
             onTriggered: {
                 const arr = root._peakHistory.slice()
-                arr.push((ExtensionServices.get("phone-link", "PhoneMicService") || {}).peakVolumePercent)
+                arr.push((ExtensionServices.loaded["phone-link.PhoneMicService"] || {}).peakVolumePercent)
                 if (arr.length > 40) arr.shift()
                 root._peakHistory = arr
             }
@@ -456,18 +456,18 @@ ContentPage {
                 { displayName: Translation.tr("Wi-Fi"), icon: "wifi", value: "wifi" },
                 { displayName: Translation.tr("USB"), icon: "usb", value: "usb" }
             ]
-            currentValue: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.microphone.connection
-            onSelected: (v) => (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.microphone.connection = v
+            currentValue: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.microphone.connection
+            onSelected: (v) => (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.microphone.connection = v
         }
 
         ConfigTextField {
-            visible: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.microphone.connection === "wifi"
+            visible: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.microphone.connection === "wifi"
             text: Translation.tr("Phone IP")
             icon: "ip"
             placeholderText: Translation.tr("Auto-detect from KDE Connect")
-            inputText: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.microphone.wifiIp
+            inputText: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.microphone.wifiIp
             onEditingFinished: {
-                (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.microphone.wifiIp = inputText.trim()
+                (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.microphone.wifiIp = inputText.trim()
             }
             tooltip: Translation.tr("Leave empty to auto-detect from KDE Connect")
         }
@@ -475,10 +475,10 @@ ContentPage {
         ConfigSpinBox {
             text: Translation.tr("Port")
             icon: "router"
-            value: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.microphone.port
+            value: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.microphone.port
             from: 1024
             to: 65535
-            onValueChanged: (ExtensionServices.get("phone-link", "KdeConnectService") || {}).config.microphone.port = value
+            onValueChanged: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.microphone.port = value
         }
     }
 

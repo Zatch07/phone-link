@@ -31,7 +31,7 @@ import Quickshell.Io
  *   • `lastError` — last failure reason (surfaced via errorOccurred).
  *
  * IP resolution priority:
- *   1. ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.wifiIp (user override)
+ *   1. ExtensionServices.loaded["phone-link.KdeConnectService"].config.webcam.wifiIp (user override)
  *   2. KDE Connect DBus property `org.kde.kdeconnect.device.reachableAddresses`
  *      (returns the IPs KDE Connect is currently using for the active device).
  */
@@ -87,7 +87,7 @@ Singleton {
         checkAvailProc.running = true
     }
 
-    // Mirror ExtensionServices.get("phone-link", "KdeConnectService")._enabled: stays dormant when Phone tab is off.
+    // Mirror ExtensionServices.loaded["phone-link.KdeConnectService"]._enabled: stays dormant when Phone tab is off.
     readonly property bool _enabled: true
 
     on_EnabledChanged: {
@@ -421,7 +421,7 @@ Singleton {
     // ─── Public API ────────────────────────────────────────
 
     /**
-     * Starts the droidcam-cli video process using ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.
+     * Starts the droidcam-cli video process using ExtensionServices.loaded["phone-link.KdeConnectService"].config.webcam.
      * Idempotent — calling while already running/connecting is a no-op.
      *
      * Connection selection priority:
@@ -437,7 +437,7 @@ Singleton {
      */
     function startCamera(): void {
         if (!root.available || root.running || root.connecting) return
-        if (!ExtensionServices.get("phone-link", "KdeConnectService").activeReachable) {
+        if (!ExtensionServices.loaded["phone-link.KdeConnectService"].activeReachable) {
             root.lastError = "No reachable KDE Connect device — pair a device first"
             root.errorOccurred(root.lastError)
             return
@@ -448,7 +448,7 @@ Singleton {
         root._userStopped = false
         root.stateChanged()
 
-        const _svc = ExtensionServices.get("phone-link", "KdeConnectService"); const conf = (_svc && _svc.config && _svc.config.webcam) ? _svc.config.webcam : null
+        const _svc = ExtensionServices.loaded["phone-link.KdeConnectService"]; const conf = (_svc && _svc.config && _svc.config.webcam) ? _svc.config.webcam : null
         const port = (conf && conf.port) ? conf.port : 4747
         const connection = (conf && conf.connection) ? conf.connection : "usb"
 
@@ -479,7 +479,7 @@ Singleton {
      * onExited (case 3).
      */
     function _launchCameraProcess(mode: string, port: int, ip: string): void {
-        const _svc = ExtensionServices.get("phone-link", "KdeConnectService"); const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
+        const _svc = ExtensionServices.loaded["phone-link.KdeConnectService"]; const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
 
         // Build args using the CORRECT droidcam-cli 2.1.5 syntax (single-dash, =).
         const args = ["droidcam-cli", "-nocontrols"]
@@ -562,7 +562,7 @@ Singleton {
      * if the control is not available we restart the process with -hflip.
      */
     function toggleMirror(): void {
-        const _svc = ExtensionServices.get("phone-link", "KdeConnectService"); const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
+        const _svc = ExtensionServices.loaded["phone-link.KdeConnectService"]; const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
         conf.mirrorHorizontally = !conf.mirrorHorizontally
         if (root.running && root.videoDevice.length > 0) {
             // Try v4l2-ctl first — works on some v4l2loopback configs.
@@ -581,7 +581,7 @@ Singleton {
      * running (since 180° = -vflip -hflip and 90/270 need app-side rotation).
      */
     function setRotation(degrees: int): void {
-        const _svc = ExtensionServices.get("phone-link", "KdeConnectService"); const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
+        const _svc = ExtensionServices.loaded["phone-link.KdeConnectService"]; const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
         conf.rotateDegrees = degrees
         if (root.running || root.connecting) {
             root.stopCamera()
@@ -597,7 +597,7 @@ Singleton {
      * the DroidCam app on their phone and tap the camera flip button there.
      */
     function flipCamera(): void {
-        const _svc = ExtensionServices.get("phone-link", "KdeConnectService"); const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
+        const _svc = ExtensionServices.loaded["phone-link.KdeConnectService"]; const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
         conf.cameraFacing = (conf.cameraFacing === "front") ? "back" : "front"
         // Do NOT restart the connection — droidcam-cli can't toggle the
         // camera. The user needs to switch it in the DroidCam app on the
@@ -657,7 +657,7 @@ Singleton {
      * launch flow after the probe finishes.
      *
      * This replaces the old synchronous adbProbeForFallback pattern, which
-     * had a race: if ExtensionServices.get("phone-link", "KdeConnectService").adbReachable was stale (cached 30s),
+     * had a race: if ExtensionServices.loaded["phone-link.KdeConnectService"].adbReachable was stale (cached 30s),
      * the first invocation would fail and only the second one would work —
      * leaving the user stuck in "connecting" state.
      */
@@ -672,8 +672,8 @@ Singleton {
             "else exit 1; fi"]
         onExited: (code, status) => {
             const now = (code === 0)
-            if (now !== ExtensionServices.get("phone-link", "KdeConnectService").adbReachable) {
-                ExtensionServices.get("phone-link", "KdeConnectService").adbReachable = now
+            if (now !== ExtensionServices.loaded["phone-link.KdeConnectService"].adbReachable) {
+                ExtensionServices.loaded["phone-link.KdeConnectService"].adbReachable = now
             }
             if (!usbProbeForStartup._oneShot) return
             usbProbeForStartup._oneShot = false
@@ -684,7 +684,7 @@ Singleton {
                 root._launchCameraProcess("usb", root._pendingPort, "")
             } else {
                 // USB not available — try the auto-detected Wi-Fi IP.
-                const _svc = ExtensionServices.get("phone-link", "KdeConnectService"); const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
+                const _svc = ExtensionServices.loaded["phone-link.KdeConnectService"]; const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
                 const ip = root._resolveIp(conf)
                 if (!ip) {
                     root.connecting = false
@@ -705,7 +705,7 @@ Singleton {
 
     /**
      * Resolves the phone IP. Priority:
-     *   1. ExtensionServices.get("phone-link", "KdeConnectService").config.webcam.wifiIp (user override)
+     *   1. ExtensionServices.loaded["phone-link.KdeConnectService"].config.webcam.wifiIp (user override)
      *   2. KDE Connect DBus property `reachableAddresses` (returns all IPs
      *      KDE Connect has seen for the device — first one wins).
      */
@@ -747,7 +747,7 @@ Singleton {
 
     /** Triggers async DBus fetch of the active device's IPs. */
     function _fetchDeviceIp(): void {
-        const devId = ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId
+        const devId = ExtensionServices.loaded["phone-link.KdeConnectService"].activeDeviceId
         if (!devId) {
             root._lastKnownIp = ""
             return
@@ -761,7 +761,7 @@ Singleton {
 
     // Re-fetch IP whenever the active device changes (or first becomes available).
     Connections {
-        target: ExtensionServices.get("phone-link", "KdeConnectService")
+        target: ExtensionServices.loaded["phone-link.KdeConnectService"]
         ignoreUnknownSignals: true
         function onActiveDeviceIdChanged() {
             if (root.running || root.connecting) {
@@ -771,7 +771,7 @@ Singleton {
             root._fetchDeviceIp()
         }
         function onActiveReachableChanged() {
-            if (ExtensionServices.get("phone-link", "KdeConnectService").activeReachable) {
+            if (ExtensionServices.loaded["phone-link.KdeConnectService"].activeReachable) {
                 root._fetchDeviceIp()
             }
         }

@@ -137,7 +137,7 @@ Singleton {
         })
     }
 
-    // Mirror ExtensionServices.get("phone-link", "KdeConnectService")._enabled: stays dormant when Phone tab is off.
+    // Mirror ExtensionServices.loaded["phone-link.KdeConnectService"]._enabled: stays dormant when Phone tab is off.
     readonly property bool _enabled: true
 
     on_EnabledChanged: {
@@ -475,7 +475,7 @@ Singleton {
     // ─── Public API ────────────────────────────────────────
 
     /**
-     * Starts the droidcam-cli audio process using ExtensionServices.get("phone-link", "KdeConnectService").config.microphone.
+     * Starts the droidcam-cli audio process using ExtensionServices.loaded["phone-link.KdeConnectService"].config.microphone.
      *
      * Connection selection priority (mirrors PhoneCameraService):
      *   1. If user set `connection: "usb"` → use ADB directly.
@@ -490,7 +490,7 @@ Singleton {
      */
     function startMic(): void {
         if (!root.available || root.running || root.connecting) return
-        if (!ExtensionServices.get("phone-link", "KdeConnectService").activeReachable) {
+        if (!ExtensionServices.loaded["phone-link.KdeConnectService"].activeReachable) {
             root.lastError = "No reachable KDE Connect device — pair a device first"
             root.errorOccurred(root.lastError)
             return
@@ -512,7 +512,7 @@ Singleton {
         root._userStopped = false
         root.stateChanged()
 
-        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.microphone
+        const conf = ExtensionServices.loaded["phone-link.KdeConnectService"].config.microphone
         root._pendingPort = conf.port || 4748
 
         // 1. Create null-sink & capture .monitor source name.
@@ -570,10 +570,10 @@ Singleton {
     function _decideAndLaunchAudio(): void {
         // If null-sink setup failed, _launchDroidcamAudio will surface
         // the error from `pulseSource` being empty.
-        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.microphone
+        const conf = ExtensionServices.loaded["phone-link.KdeConnectService"].config.microphone
 
         // Check if scrcpy is available — prefer it over droidcam.
-        if (ExtensionServices.get("phone-link", "KdeConnectService").scrcpyAvailable) {
+        if (ExtensionServices.loaded["phone-link.KdeConnectService"].scrcpyAvailable) {
             root._backend = "scrcpy"
             root._launchScrcpyMic()
             return
@@ -678,7 +678,7 @@ Singleton {
                       "--audio-source=mic", "--audio-buffer=50"]
 
         // Wireless ADB if configured in the scrcpy settings page.
-        const scrcpyConf = ExtensionServices.get("phone-link", "KdeConnectService") && ExtensionServices.get("phone-link", "KdeConnectService").config ? ExtensionServices.get("phone-link", "KdeConnectService").config.scrcpy : null
+        const scrcpyConf = ExtensionServices.loaded["phone-link.KdeConnectService"] && ExtensionServices.loaded["phone-link.KdeConnectService"].config ? ExtensionServices.loaded["phone-link.KdeConnectService"].config.scrcpy : null
         const useWireless = scrcpyConf ? scrcpyConf.useWireless : false
         const wirelessIp = scrcpyConf ? (scrcpyConf.wirelessIp || "") : ""
         const wirelessPort = scrcpyConf ? (scrcpyConf.wirelessPort || "5555") : "5555"
@@ -940,7 +940,7 @@ Singleton {
 
     function setGain(percent: int): void {
         root.micGain = Math.max(0, Math.min(200, percent))
-        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.microphone
+        const conf = ExtensionServices.loaded["phone-link.KdeConnectService"].config.microphone
         conf.micGain = root.micGain
         if (root.running && root.pulseSource.length > 0) {
             gainProc.command = ["bash", "-c",
@@ -1036,8 +1036,8 @@ Singleton {
             "else exit 1; fi"]
         onExited: (code, status) => {
             const now = (code === 0)
-            if (now !== ExtensionServices.get("phone-link", "KdeConnectService").adbReachable) {
-                ExtensionServices.get("phone-link", "KdeConnectService").adbReachable = now
+            if (now !== ExtensionServices.loaded["phone-link.KdeConnectService"].adbReachable) {
+                ExtensionServices.loaded["phone-link.KdeConnectService"].adbReachable = now
             }
             if (!usbProbeForStartup._oneShot) return
             usbProbeForStartup._oneShot = false
@@ -1048,7 +1048,7 @@ Singleton {
                 root._launchDroidcamAudio("usb", root._pendingPort, "")
             } else {
                 // USB not available — try the auto-detected Wi-Fi IP.
-                const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.microphone
+                const conf = ExtensionServices.loaded["phone-link.KdeConnectService"].config.microphone
                 const ip = root._resolveIp(conf)
                 if (!ip) {
                     root.connecting = false
@@ -1064,7 +1064,7 @@ Singleton {
     }
 
     function _applyInitialState(): void {
-        const conf = ExtensionServices.get("phone-link", "KdeConnectService").config.microphone
+        const conf = ExtensionServices.loaded["phone-link.KdeConnectService"].config.microphone
         // Mute
         root.muted = false // always start unmuted; user can toggle
         // Gain
@@ -1103,7 +1103,7 @@ Singleton {
     }
 
     function _fetchDeviceIp(): void {
-        const devId = ExtensionServices.get("phone-link", "KdeConnectService").activeDeviceId
+        const devId = ExtensionServices.loaded["phone-link.KdeConnectService"].activeDeviceId
         if (!devId) {
             root._lastKnownIp = ""
             return
@@ -1117,7 +1117,7 @@ Singleton {
 
     // If user switches device mid-stream, stop the mic.
     Connections {
-        target: ExtensionServices.get("phone-link", "KdeConnectService")
+        target: ExtensionServices.loaded["phone-link.KdeConnectService"]
         ignoreUnknownSignals: true
         function onActiveDeviceIdChanged() {
             if (root.running || root.connecting) {
@@ -1127,7 +1127,7 @@ Singleton {
             root._fetchDeviceIp()
         }
         function onActiveReachableChanged() {
-            if (ExtensionServices.get("phone-link", "KdeConnectService").activeReachable) {
+            if (ExtensionServices.loaded["phone-link.KdeConnectService"].activeReachable) {
                 root._fetchDeviceIp()
             }
         }
