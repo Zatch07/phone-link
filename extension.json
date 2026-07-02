@@ -35,12 +35,6 @@
         { "displayName": "720p", "value": "1280x720" },
         { "displayName": "1080p", "value": "1920x1080" }
       ]
-    },
-    "run_setup_script": {
-      "type": "bool",
-      "label": "Run Dependencies Script (Kitty)",
-      "icon": "terminal",
-      "default": false
     }
   }
 }

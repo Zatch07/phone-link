@@ -7,7 +7,7 @@ A powerful Quickshell extension that integrates your phone tightly with your Lin
 1. **Install Dependencies (The Easy Way):**
    This extension requires several system packages to work, such as KDE Connect for communication, `sshfs` for file browsing, `scrcpy` for screen mirroring, and `droidcam-cli` for webcam support.
    
-   To install them, just open your Quickshell **Installed Extensions** menu, open the **Phone Link** dropdown, and click the **Run Dependencies Script (Kitty)** toggle! 
+   To install them, just open the Phone Link extension tab, and click the **Wrench/Settings Icon** in the top header next to the device selector! 
    
    This will instantly launch an interactive setup wizard in Kitty that allows you to choose exactly which features you want to install. It will also seamlessly configure your Linux kernel modules (`v4l2loopback` and `snd_aloop`) so your virtual webcam and mic work reliably on every startup.
 
