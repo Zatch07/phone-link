@@ -324,6 +324,40 @@ Item {
                 if (root._mic) root._mic.stopMic()
             }
         }
+
+        RippleButton {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 36
+            buttonRadius: Appearance.rounding.large
+            colBackground: Appearance.colors.colLayer1
+            colBackgroundHover: Appearance.colors.colLayer2Hover
+            
+            scale: down ? 0.98 : 1.0
+            Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
+
+            contentItem: RowLayout {
+                spacing: 8
+                Item { Layout.fillWidth: true }
+                MaterialSymbol {
+                    Layout.alignment: Qt.AlignVCenter
+                    text: "build"
+                    iconSize: 18
+                    color: Appearance.colors.colSubtext
+                }
+                StyledText {
+                    Layout.alignment: Qt.AlignVCenter
+                    text: Translation.tr("Install Dependencies")
+                    font.pixelSize: Appearance.font.pixelSize.smaller
+                    font.weight: Font.DemiBold
+                    color: Appearance.colors.colSubtext
+                }
+                Item { Layout.fillWidth: true }
+            }
+            
+            onClicked: {
+                Quickshell.execDetached(["kitty", "--", "bash", "-c", "cd ~/.config/illogical-impulse/extensions/installed/phone-link && ./install_dependencies.sh; echo ''; read -p 'Press Enter to exit'"])
+            }
+        }
     }
 
     // ─── Install guide popup overlay ───────────────────────

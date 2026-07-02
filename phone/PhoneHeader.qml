@@ -113,32 +113,6 @@ Item {
             }
         }
 
-        RippleButton {
-            Layout.preferredWidth: 38
-            Layout.preferredHeight: 38
-            buttonRadius: Appearance.rounding.full
-            colBackground: Appearance.colors.colLayer3
-            colBackgroundHover: Appearance.colors.colLayer3Hover
-            
-            scale: down ? 0.94 : (hovered ? 1.02 : 1.0)
-            Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
-
-            contentItem: MaterialSymbol {
-                anchors.centerIn: parent
-                text: "build"
-                iconSize: Appearance.font.pixelSize.normal
-                color: Appearance.colors.colOnLayer3
-            }
-            
-            onClicked: {
-                Quickshell.execDetached(["kitty", "--", "bash", "-c", "cd ~/.config/illogical-impulse/extensions/installed/phone-link && ./install_dependencies.sh; echo ''; read -p 'Press Enter to exit'"])
-            }
-
-            StyledToolTip {
-                text: Translation.tr("Install / Update Dependencies")
-            }
-        }
-
         Item { Layout.fillWidth: true }
 
         // ─── Signal pill ───
