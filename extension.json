@@ -2,7 +2,7 @@
   "extensionId": "phone-link",
   "name": "Phone Link",
   "description": "Seamless phone integration. Click 'Run Dependencies Script' below or visit the GitHub README to setup.",
-  "version": "2.0.0",
+  "version": "2.5.0",
   "author": "Zatch07",
   "icon": "smartphone",
   "shapeString": "Cookie9Sided",

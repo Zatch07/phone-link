@@ -44,3 +44,7 @@ Phone-Link acts as a bridge between a customized QML user interface (Quickshell)
 1. **DBus Integration:** The core of the extension relies on KDE Connect's local background service (`kdeconnectd`). A Python background script (`scripts/kdeconnect/monitor.py`) listens to KDE Connect's DBus events in real-time (like battery percentage, connection status, and notifications) and broadcasts them directly to the QML UI as JSON objects.
 2. **Commands & Execution:** Actions inside the extension execute raw shell commands natively (e.g., launching `scrcpy` to mirror your screen or `droidcam-cli` to mount a webcam). We use `qdbus` cross-platform abstractions to securely invoke KDE Connect methods, such as mounting the phone's SFTP storage.
 3. **Reactive UI:** The interface is built using Qt/QML. It uses `ExtensionServices.loaded` binding proxies to instantly update its states whenever the background services detect an event (e.g., hiding buttons if your phone disconnects from the Wi-Fi).
+
+## Credits
+
+Special thanks to [P3drovfx](https://github.com/P3drovfx) for providing the underlying functionality and inspiration for this project!
