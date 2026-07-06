@@ -64,9 +64,26 @@ Singleton {
 
     property QtObject config: QtObject {
         property QtObject scrcpy: QtObject {
-            property bool useWireless: false
-            property string wirelessIp: ""
-            property string wirelessPort: "5555"
+            property bool useWireless: typeof ExtensionManager !== "undefined" ? (ExtensionManager.extensionConfigs["phone-link"]?.scrcpy_use_wireless ?? false) : false
+            onUseWirelessChanged: {
+                if (typeof ExtensionManager !== "undefined" && ExtensionManager.extensionConfigs["phone-link"]?.scrcpy_use_wireless !== useWireless) {
+                    ExtensionManager.setExtensionConfig("phone-link", "scrcpy_use_wireless", useWireless)
+                }
+            }
+            
+            property string wirelessIp: typeof ExtensionManager !== "undefined" ? (ExtensionManager.extensionConfigs["phone-link"]?.scrcpy_wireless_ip ?? "") : ""
+            onWirelessIpChanged: {
+                if (typeof ExtensionManager !== "undefined" && ExtensionManager.extensionConfigs["phone-link"]?.scrcpy_wireless_ip !== wirelessIp) {
+                    ExtensionManager.setExtensionConfig("phone-link", "scrcpy_wireless_ip", wirelessIp)
+                }
+            }
+            
+            property string wirelessPort: typeof ExtensionManager !== "undefined" ? String(ExtensionManager.extensionConfigs["phone-link"]?.scrcpy_wireless_port ?? 5555) : "5555"
+            onWirelessPortChanged: {
+                if (typeof ExtensionManager !== "undefined" && String(ExtensionManager.extensionConfigs["phone-link"]?.scrcpy_wireless_port) !== wirelessPort) {
+                    ExtensionManager.setExtensionConfig("phone-link", "scrcpy_wireless_port", parseInt(wirelessPort))
+                }
+            }
             property int maxSize: 0
             property int maxFps: 0
             property string bitRate: ""

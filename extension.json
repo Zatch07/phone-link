@@ -22,12 +22,33 @@
     ]
   },
   "configDefaults": {
+    "scrcpy_use_wireless": false,
+    "scrcpy_wireless_ip": "",
+    "scrcpy_wireless_port": 5555,
     "webcam_connection": "auto",
     "webcam_wifi_ip": "",
     "webcam_port": 4747,
     "webcam_resolution": "1280x720"
   },
   "configSchema": {
+    "scrcpy_use_wireless": {
+      "type": "boolean",
+      "label": "Scrcpy: Use Wireless Debugging",
+      "icon": "wifi",
+      "default": false
+    },
+    "scrcpy_wireless_ip": {
+      "type": "string",
+      "label": "Scrcpy: Wireless IP",
+      "icon": "router",
+      "default": ""
+    },
+    "scrcpy_wireless_port": {
+      "type": "number",
+      "label": "Scrcpy: Wireless Port",
+      "icon": "tag",
+      "default": 5555
+    },
     "webcam_connection": {
       "type": "enum",
       "label": "Webcam Connection",
