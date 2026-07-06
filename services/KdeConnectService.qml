@@ -1121,7 +1121,8 @@ Singleton {
         // Build shell command — delay monkey by 1s so scrcpy starts first.
         let cmd = ""
         if (useWireless && wirelessIp.length > 0) {
-            cmd += "adb connect " + root._shellQuote(wirelessIp + ":" + wirelessPort) + " >/dev/null 2>&1; "
+            const host = wirelessIp.indexOf(":") >= 0 ? wirelessIp : (wirelessIp + ":" + wirelessPort)
+            cmd += "adb connect " + root._shellQuote(host) + " >/dev/null 2>&1; "
         }
         cmd += "sleep 1; "
         cmd += "adb shell monkey -p " + root._shellQuote(pkg) +

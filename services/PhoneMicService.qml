@@ -693,7 +693,7 @@ Singleton {
         const wirelessPort = scrcpyConf ? (scrcpyConf.wirelessPort || "5555") : "5555"
 
         if (useWireless && wirelessIp.length > 0) {
-            const host = wirelessIp + ":" + wirelessPort
+            const host = wirelessIp.indexOf(":") >= 0 ? wirelessIp : (wirelessIp + ":" + wirelessPort)
             Quickshell.execDetached(["bash", "-c",
                 "adb connect " + root._shellQuote(host) + " >/dev/null 2>&1"])
             args.push("--serial=" + root._shellQuote(host))

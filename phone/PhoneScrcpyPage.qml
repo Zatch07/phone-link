@@ -543,7 +543,7 @@ ContentPage {
             visible: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.scrcpy.useWireless
             text: Translation.tr("Wireless IP")
             icon: "ip"
-            placeholderText: "192.168.1.42"
+            placeholderText: "192.168.1.42:5555"
             inputText: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.scrcpy.wirelessIp
             onEditingFinished: {
                 (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.scrcpy.wirelessIp = inputText.trim()
