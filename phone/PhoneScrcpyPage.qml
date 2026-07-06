@@ -534,14 +534,14 @@ ContentPage {
 
         ConfigSwitch {
             buttonIcon: "wifi"
-            text: Translation.tr("Use wireless ADB")
+            text: Translation.tr("Use Wireless IP & port")
             checked: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.scrcpy.useWireless
             onCheckedChanged: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.scrcpy.useWireless = checked
         }
 
         ConfigTextField {
             visible: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.scrcpy.useWireless
-            text: Translation.tr("Phone IP")
+            text: Translation.tr("Wireless IP")
             icon: "ip"
             placeholderText: "192.168.1.42"
             inputText: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.scrcpy.wirelessIp
