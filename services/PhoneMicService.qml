@@ -683,7 +683,7 @@ Singleton {
         // --no-window     : don't open an SDL window
         // --audio-source=mic : capture the phone's microphone
         // --audio-buffer=50  : low latency (50ms)
-        const args = ["scrcpy", "--no-video", "--no-window",
+        const args = ["env", "PULSE_SINK=DroidCam-Mic", "scrcpy", "--no-video", "--no-window",
                       "--audio-source=mic", "--audio-buffer=50"]
 
         // Wireless ADB if configured in the scrcpy settings page.
@@ -785,8 +785,8 @@ Singleton {
             "  }" +
             "  /scrcpy/ { prev_matched = 1 }" +
             "  END { if (prev_matched) print prev_id }" +
-            "' | while read id; do" +
-            "  pactl move-sink-input \"$id\" DroidCam-Mic 2>/dev/null" +
+            "' | while read id; do " +
+            "  pactl move-sink-input \"$id\" DroidCam-Mic 2>/dev/null; " +
             "done"
         ]
     }
