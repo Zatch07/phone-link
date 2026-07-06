@@ -451,7 +451,8 @@ Singleton {
         let connection = "auto"
         let userIp = ""
         let port = 4747
-        if (typeof ExtensionManager !== "undefined") {
+        let emType = typeof ExtensionManager
+        if (emType !== "undefined") {
             connection = ExtensionManager.getExtensionConfig("phone-link", "webcam_connection", "auto")
             userIp = (ExtensionManager.getExtensionConfig("phone-link", "webcam_wifi_ip", "") || "").trim()
             port = parseInt(ExtensionManager.getExtensionConfig("phone-link", "webcam_port", 4747)) || 4747
@@ -462,6 +463,7 @@ Singleton {
             userIp = ((conf && conf.wifiIp) ? conf.wifiIp : "").trim()
             port = (conf && conf.port) ? conf.port : 4747
         }
+        Quickshell.execDetached(["bash", "-c", "echo 'EM: " + emType + " IP: " + userIp + " Port: " + port + "' > /tmp/droidcam-ip.log"])
 
         // Case 1: explicit USB preference — launch immediately.
         if (connection === "usb") {
@@ -526,9 +528,10 @@ Singleton {
                 root.stateChanged()
                 return
             }
-            args.push(ip, String(port))
+            args.push(String(ip), String(port))
         }
 
+        Quickshell.execDetached(["bash", "-c", "echo '" + JSON.stringify(args) + "' > /tmp/droidcam-debug.log"])
         droidcamProc.command = args
         root.activeIp = ip || (useAdbFallback ? "(usb)" : "")
         root.activePort = port
