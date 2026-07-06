@@ -463,8 +463,6 @@ Singleton {
             userIp = ((conf && conf.wifiIp) ? conf.wifiIp : "").trim()
             port = (conf && conf.port) ? conf.port : 4747
         }
-        Quickshell.execDetached(["bash", "-c", "echo 'EM: " + emType + " IP: " + userIp + " Port: " + port + "' > /tmp/droidcam-ip.log"])
-
         // Case 1: explicit USB preference — launch immediately.
         if (connection === "usb") {
             root._launchCameraProcess("usb", port, "")
@@ -472,7 +470,6 @@ Singleton {
         }
 
         // Case 2: Wi-Fi preference with explicit IP — launch immediately.
-        let userIp = ((conf && conf.wifiIp) ? conf.wifiIp : "").trim()
         if (userIp.length > 0) {
             // Strip port if user accidentally typed IP:PORT in the IP field
             if (userIp.indexOf(":") > 0) userIp = userIp.split(":")[0]
@@ -531,7 +528,6 @@ Singleton {
             args.push(String(ip), String(port))
         }
 
-        Quickshell.execDetached(["bash", "-c", "echo '" + JSON.stringify(args) + "' > /tmp/droidcam-debug.log"])
         droidcamProc.command = args
         root.activeIp = ip || (useAdbFallback ? "(usb)" : "")
         root.activePort = port
