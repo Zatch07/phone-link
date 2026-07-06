@@ -471,8 +471,14 @@ Singleton {
 
         // Case 2: Wi-Fi preference with explicit IP — launch immediately.
         if (userIp.length > 0) {
-            // Strip port if user accidentally typed IP:PORT in the IP field
-            if (userIp.indexOf(":") > 0) userIp = userIp.split(":")[0]
+            // Extract port if user accidentally typed IP:PORT in the IP field
+            if (userIp.indexOf(":") > 0) {
+                const parts = userIp.split(":")
+                userIp = parts[0]
+                if (parts.length > 1 && parseInt(parts[1]) > 0) {
+                    port = parseInt(parts[1])
+                }
+            }
             root._launchCameraProcess("wifi", port, userIp)
             return
         }

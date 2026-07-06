@@ -589,8 +589,15 @@ Singleton {
         }
 
         // Case 2: Wi-Fi preference with explicit IP — launch immediately.
-        const userIp = (conf.wifiIp || "").trim()
+        let userIp = (conf.wifiIp || "").trim()
         if (userIp.length > 0) {
+            if (userIp.indexOf(":") > 0) {
+                const parts = userIp.split(":")
+                userIp = parts[0]
+                if (parts.length > 1 && parseInt(parts[1]) > 0) {
+                    root._pendingPort = parseInt(parts[1])
+                }
+            }
             root._launchDroidcamAudio("wifi", root._pendingPort, userIp)
             return
         }
