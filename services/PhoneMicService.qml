@@ -653,18 +653,27 @@ Singleton {
                 }
                 root._originalDefaultSink = orig
                 root._storeOriginalSink(orig)
-                // Set DroidCam-Mic as the default sink. scrcpy's SDL2 audio
-                // backend opens its sink-input on the default sink when no
-                // PULSE_SINK is set (or when it's ignored on PipeWire).
-                Quickshell.execDetached(["bash", "-c",
-                    "pactl set-default-sink DroidCam-Mic 2>/dev/null || true"])
-                // Now launch scrcpy (no PULSE_SINK env needed — the default
-                // sink swap handles the routing).
-                root._launchScrcpyMicInner()
-                // Schedule restoration after 3s — enough time for scrcpy's
-                // SDL2 to create the sink-input on DroidCam-Mic.
-                restoreDefaultSinkTimer.restart()
+                
+                // Set DroidCam-Mic as the default sink SYNCHRONOUSLY.
+                // We must wait for this command to finish before launching scrcpy,
+                // otherwise scrcpy will bind to the original default sink (speakers),
+                // bypassing our null-sink and breaking mute/gain/monitor controls.
+                setSinkProc.running = true
             }
+        }
+    }
+
+    Process {
+        id: setSinkProc
+        running: false
+        command: ["bash", "-c", "pactl set-default-sink DroidCam-Mic 2>/dev/null || true"]
+        onExited: {
+            // Now launch scrcpy (no PULSE_SINK env needed — the default
+            // sink swap handles the routing).
+            root._launchScrcpyMicInner()
+            // Schedule restoration after 3s — enough time for scrcpy's
+            // SDL2 to create the sink-input on DroidCam-Mic.
+            restoreDefaultSinkTimer.restart()
         }
     }
 
