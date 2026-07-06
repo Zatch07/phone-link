@@ -448,9 +448,20 @@ Singleton {
         root._userStopped = false
         root.stateChanged()
 
-        const _svc = ExtensionServices.loaded["phone-link.KdeConnectService"]; const conf = (_svc && _svc.config && _svc.config.webcam) ? _svc.config.webcam : null
-        const port = (conf && conf.port) ? conf.port : 4747
-        const connection = (conf && conf.connection) ? conf.connection : "usb"
+        let connection = "auto"
+        let userIp = ""
+        let port = 4747
+        if (typeof ExtensionManager !== "undefined") {
+            connection = ExtensionManager.getExtensionConfig("phone-link", "webcam_connection", "auto")
+            userIp = (ExtensionManager.getExtensionConfig("phone-link", "webcam_wifi_ip", "") || "").trim()
+            port = parseInt(ExtensionManager.getExtensionConfig("phone-link", "webcam_port", 4747)) || 4747
+        } else {
+            const _svc = ExtensionServices.loaded["phone-link.KdeConnectService"]
+            const conf = (_svc && _svc.config && _svc.config.webcam) ? _svc.config.webcam : null
+            connection = (conf && conf.connection) ? conf.connection : "usb"
+            userIp = ((conf && conf.wifiIp) ? conf.wifiIp : "").trim()
+            port = (conf && conf.port) ? conf.port : 4747
+        }
 
         // Case 1: explicit USB preference — launch immediately.
         if (connection === "usb") {
@@ -712,8 +723,18 @@ Singleton {
      *      KDE Connect has seen for the device — first one wins).
      */
     function _resolveIp(conf): string {
-        if (conf.connection === "usb") return ""
-        let configuredIp = (conf.wifiIp || "").trim()
+        let connection = "auto"
+        let configuredIp = ""
+        if (typeof ExtensionManager !== "undefined") {
+            connection = ExtensionManager.getExtensionConfig("phone-link", "webcam_connection", "auto")
+            configuredIp = (ExtensionManager.getExtensionConfig("phone-link", "webcam_wifi_ip", "") || "").trim()
+        } else if (conf) {
+            connection = conf.connection || "auto"
+            configuredIp = (conf.wifiIp || "").trim()
+        }
+
+        if (connection === "usb") return ""
+        
         if (configuredIp.length > 0) {
             if (configuredIp.indexOf(":") > 0) configuredIp = configuredIp.split(":")[0]
             return configuredIp

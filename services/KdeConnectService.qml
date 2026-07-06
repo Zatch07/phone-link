@@ -1105,9 +1105,18 @@ Singleton {
         }
 
         const scrcpyConf = root.config ? root.config.scrcpy : null
-        const useWireless = scrcpyConf ? scrcpyConf.useWireless : false
-        const wirelessIp = scrcpyConf ? (scrcpyConf.wirelessIp || "") : ""
-        const wirelessPort = scrcpyConf ? (scrcpyConf.wirelessPort || "5555") : "5555"
+        let useWireless = false
+        let wirelessIp = ""
+        let wirelessPort = "5555"
+        if (typeof ExtensionManager !== "undefined") {
+            useWireless = ExtensionManager.getExtensionConfig("phone-link", "scrcpy_use_wireless", false)
+            wirelessIp = (ExtensionManager.getExtensionConfig("phone-link", "scrcpy_wireless_ip", "") || "").trim()
+            wirelessPort = String(ExtensionManager.getExtensionConfig("phone-link", "scrcpy_wireless_port", 5555))
+        } else if (scrcpyConf) {
+            useWireless = scrcpyConf.useWireless
+            wirelessIp = scrcpyConf.wirelessIp || ""
+            wirelessPort = scrcpyConf.wirelessPort || "5555"
+        }
 
         // Build shell command — delay monkey by 1s so scrcpy starts first.
         let cmd = ""
@@ -1396,14 +1405,14 @@ Singleton {
 
             if (mode === "wireless") {
                 useWireless = true
-                wirelessIp = scrcpyConf.wirelessIp
-                wirelessPort = scrcpyConf.wirelessPort
+                wirelessIp = typeof ExtensionManager !== "undefined" ? (ExtensionManager.getExtensionConfig("phone-link", "scrcpy_wireless_ip", "") || "").trim() : scrcpyConf.wirelessIp
+                wirelessPort = typeof ExtensionManager !== "undefined" ? String(ExtensionManager.getExtensionConfig("phone-link", "scrcpy_wireless_port", 5555)) : scrcpyConf.wirelessPort
             } else if (mode === "usb") {
                 useWireless = false
             } else {
-                useWireless = scrcpyConf.useWireless
-                wirelessIp = scrcpyConf.wirelessIp
-                wirelessPort = scrcpyConf.wirelessPort
+                useWireless = typeof ExtensionManager !== "undefined" ? ExtensionManager.getExtensionConfig("phone-link", "scrcpy_use_wireless", false) : scrcpyConf.useWireless
+                wirelessIp = typeof ExtensionManager !== "undefined" ? (ExtensionManager.getExtensionConfig("phone-link", "scrcpy_wireless_ip", "") || "").trim() : scrcpyConf.wirelessIp
+                wirelessPort = typeof ExtensionManager !== "undefined" ? String(ExtensionManager.getExtensionConfig("phone-link", "scrcpy_wireless_port", 5555)) : scrcpyConf.wirelessPort
             }
         }
 
