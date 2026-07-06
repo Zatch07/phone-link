@@ -39,7 +39,7 @@
     },
     "scrcpy_wireless_ip": {
       "type": "string",
-      "label": "Scrcpy: Wireless IP & Port",
+      "label": "Scrcpy: Wireless IP & Port (e.g. 192.168.1.42:5555)",
       "icon": "router",
       "default": ""
     },
