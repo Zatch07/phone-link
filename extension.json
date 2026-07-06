@@ -22,9 +22,34 @@
     ]
   },
   "configDefaults": {
+    "webcam_connection": "auto",
+    "webcam_wifi_ip": "",
+    "webcam_port": 4747,
     "webcam_resolution": "1280x720"
   },
   "configSchema": {
+    "webcam_connection": {
+      "type": "enum",
+      "label": "Webcam Connection",
+      "icon": "wifi",
+      "default": "auto",
+      "options": [
+        { "displayName": "Auto (Wi-Fi or USB)", "value": "auto" },
+        { "displayName": "USB Cable Only", "value": "usb" }
+      ]
+    },
+    "webcam_wifi_ip": {
+      "type": "string",
+      "label": "Manual Wi-Fi IP (Optional)",
+      "icon": "router",
+      "default": ""
+    },
+    "webcam_port": {
+      "type": "number",
+      "label": "DroidCam Port",
+      "icon": "tag",
+      "default": 4747
+    },
     "webcam_resolution": {
       "type": "enum",
       "label": "Webcam Resolution",

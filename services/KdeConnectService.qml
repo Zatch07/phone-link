@@ -80,9 +80,26 @@ Singleton {
         }
 
         property QtObject webcam: QtObject {
-            property string connection: "usb"
-            property string wifiIp: ""
-            property int port: 4747
+            property string connection: typeof ExtensionManager !== "undefined" ? (ExtensionManager.extensionConfigs["phone-link"]?.webcam_connection ?? "auto") : "auto"
+            onConnectionChanged: {
+                if (typeof ExtensionManager !== "undefined" && ExtensionManager.extensionConfigs["phone-link"]?.webcam_connection !== connection) {
+                    ExtensionManager.setExtensionConfig("phone-link", "webcam_connection", connection)
+                }
+            }
+            
+            property string wifiIp: typeof ExtensionManager !== "undefined" ? (ExtensionManager.extensionConfigs["phone-link"]?.webcam_wifi_ip ?? "") : ""
+            onWifiIpChanged: {
+                if (typeof ExtensionManager !== "undefined" && ExtensionManager.extensionConfigs["phone-link"]?.webcam_wifi_ip !== wifiIp) {
+                    ExtensionManager.setExtensionConfig("phone-link", "webcam_wifi_ip", wifiIp)
+                }
+            }
+            
+            property int port: typeof ExtensionManager !== "undefined" ? (ExtensionManager.extensionConfigs["phone-link"]?.webcam_port ?? 4747) : 4747
+            onPortChanged: {
+                if (typeof ExtensionManager !== "undefined" && ExtensionManager.extensionConfigs["phone-link"]?.webcam_port !== port) {
+                    ExtensionManager.setExtensionConfig("phone-link", "webcam_port", port)
+                }
+            }
             property string resolution: typeof ExtensionManager !== "undefined" ? (ExtensionManager.extensionConfigs["phone-link"]?.webcam_resolution ?? "1280x720") : "1280x720"
             onResolutionChanged: {
                 if (typeof ExtensionManager !== "undefined" && ExtensionManager.extensionConfigs["phone-link"]?.webcam_resolution !== resolution) {
@@ -375,6 +392,7 @@ Singleton {
 
     function startMonitor() {
         if (monitorProc.running) return
+        Quickshell.execDetached(["kdeconnect-cli", "--refresh"])
         monitorProc.command = ["python3", root._scriptPath]
         monitorProc.running = true
     }
