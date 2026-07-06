@@ -459,8 +459,10 @@ Singleton {
         }
 
         // Case 2: Wi-Fi preference with explicit IP — launch immediately.
-        const userIp = ((conf && conf.wifiIp) ? conf.wifiIp : "").trim()
+        let userIp = ((conf && conf.wifiIp) ? conf.wifiIp : "").trim()
         if (userIp.length > 0) {
+            // Strip port if user accidentally typed IP:PORT in the IP field
+            if (userIp.indexOf(":") > 0) userIp = userIp.split(":")[0]
             root._launchCameraProcess("wifi", port, userIp)
             return
         }
@@ -711,8 +713,11 @@ Singleton {
      */
     function _resolveIp(conf): string {
         if (conf.connection === "usb") return ""
-        const configuredIp = (conf.wifiIp || "").trim()
-        if (configuredIp.length > 0) return configuredIp
+        let configuredIp = (conf.wifiIp || "").trim()
+        if (configuredIp.length > 0) {
+            if (configuredIp.indexOf(":") > 0) configuredIp = configuredIp.split(":")[0]
+            return configuredIp
+        }
         return root._lastKnownIp
     }
 
