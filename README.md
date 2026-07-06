@@ -37,6 +37,27 @@ Additionally, other settings can be changed directly inside the Phone Link inter
 - Navigate to the **Webcam** (DroidCam) or **Screen Mirroring** (Scrcpy) view.
 - Tweak the dropdowns to change options like **FPS**, or **Camera Facing** (front/back).
 
+## How to Connect Wirelessly
+
+Both **DroidCam** and **Scrcpy (Screen Mirroring)** can work completely wirelessly over Wi-Fi without needing a USB cable.
+
+### Setting up DroidCam Wirelessly
+1. Open the DroidCam app on your phone. It will display a "Wi-Fi IP" on the main screen (e.g., `192.168.1.10`).
+2. Open the Quickshell **Installed Extensions** page, click the dropdown for **Phone Link**, and set the **Manual Wi-Fi IP** field to the IP shown on your phone.
+3. Click connect! DroidCam natively runs on port `4747`, so no other setup is needed.
+
+### Setting up Scrcpy Wirelessly (Android 11+)
+Scrcpy relies on Android's built-in **ADB Wireless Debugging**, which works differently than DroidCam.
+
+1. Ensure **Developer Options** are enabled on your Android phone.
+2. Go to your phone's **Settings → Developer Options → Wireless debugging** and toggle it ON.
+3. **Important:** Native wireless debugging randomizes its port every time it's turned on. Look for the "IP address & Port" section under Wireless Debugging on your phone (e.g., `192.168.1.10:42139`).
+4. In the Quickshell **Installed Extensions** page, check the **"Scrcpy: Use Wireless Debugging"** box.
+5. In the same settings view, copy the specific 5-digit number (e.g., `42139`) from your phone into the **"Scrcpy: Wireless Port"** field.
+6. Make sure your IP is also in the **"Scrcpy: Wireless IP"** field, and click the Scrcpy button!
+
+*(Note: If you have never paired your phone with your PC via Wireless Debugging before, you must first open a terminal and run `adb pair 192.168.x.x:PORT` using the pairing port and code provided in your phone's "Pair device with pairing code" menu).*
+
 ## How It Works
 
 Phone-Link acts as a bridge between a customized QML user interface (Quickshell) and native Linux command-line tools.
