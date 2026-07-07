@@ -18,10 +18,7 @@ A powerful Quickshell extension that integrates your phone tightly with your Lin
    Open the extension on your desktop, select your phone, and click **Pair**. Accept the pairing request on your phone.
 
 3. **Reload Quickshell:**
-   Once dependencies are installed, you may need to reload Quickshell to see the changes:
-   ```bash
-   killall quickshell && quickshell &
-   ```
+   Once dependencies are installed, you must reload Quickshell to see the changes. Simply press `Ctrl + Super + R` on your keyboard!
 
 ## How to Change Settings (e.g. Webcam Resolution)
 

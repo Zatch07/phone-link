@@ -104,4 +104,4 @@ if [[ "$setup_droidcam" == "y" || "$setup_droidcam" == "Y" ]]; then
 fi
 
 echo ""
-echo "Done! You may now exit this window."
+echo "Done! Please reload Quickshell using the keybind (Ctrl + Super + R) to apply changes, then you may exit this window."
