@@ -390,6 +390,21 @@ ContentPage {
                 }
             }
         }
+
+        // Rotation (visible when connected)
+        ConfigSelectionArray {
+            visible: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).running
+            text: Translation.tr("Rotation")
+            icon: "rotate_right"
+            options: [
+                { displayName: "0°", value: 0 },
+                { displayName: "90°", value: 90 },
+                { displayName: "180°", value: 180 },
+                { displayName: "270°", value: 270 }
+            ]
+            currentValue: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.rotateDegrees
+            onSelected: (v) => (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).setRotation(v)
+        }
     }
 
     // ─── Camera settings ───────────────────────────────────
@@ -451,19 +466,6 @@ ContentPage {
             }
         }
 
-        // Rotation
-        ConfigSelectionArray {
-            text: Translation.tr("Rotation")
-            icon: "rotate_right"
-            options: [
-                { displayName: "0°", value: 0 },
-                { displayName: "90°", value: 90 },
-                { displayName: "180°", value: 180 },
-                { displayName: "270°", value: 270 }
-            ]
-            currentValue: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.rotateDegrees
-            onSelected: (v) => (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).setRotation(v)
-        }
     }
 
     // ─── Wi-Fi settings (only visible in WiFi mode) ────────
