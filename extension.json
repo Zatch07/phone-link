@@ -2,7 +2,7 @@
   "extensionId": "phone-link",
   "name": "Phone Link",
   "description": "Seamless phone integration. Click 'Run Dependencies Script' below or visit the GitHub README to setup.",
-  "version": "2.5.0",
+  "version": "3.0.0",
   "author": "Zatch07",
   "icon": "smartphone",
   "shapeString": "Cookie9Sided",
@@ -28,7 +28,11 @@
     "webcam_connection": "auto",
     "webcam_wifi_ip": "",
     "webcam_port": 4747,
-    "webcam_resolution": "1280x720"
+    "webcam_resolution": "1280x720",
+    "webcam_rotate_degrees": 0,
+    "webcam_mirror": false,
+    "webcam_camera_facing": "back",
+    "webcam_fps": 30
   },
   "configSchema": {
     "scrcpy_use_wireless": {
@@ -81,6 +85,40 @@
         { "displayName": "720p", "value": "1280x720" },
         { "displayName": "1080p", "value": "1920x1080" }
       ]
+    },
+    "webcam_rotate_degrees": {
+      "type": "enum",
+      "label": "Webcam Rotation",
+      "icon": "rotate_right",
+      "default": 0,
+      "options": [
+        { "displayName": "0°", "value": 0 },
+        { "displayName": "90°", "value": 90 },
+        { "displayName": "180°", "value": 180 },
+        { "displayName": "270°", "value": 270 }
+      ]
+    },
+    "webcam_mirror": {
+      "type": "boolean",
+      "label": "Webcam: Mirror Horizontally",
+      "icon": "flip",
+      "default": false
+    },
+    "webcam_camera_facing": {
+      "type": "enum",
+      "label": "Webcam: Camera Facing",
+      "icon": "cameraswitch",
+      "default": "back",
+      "options": [
+        { "displayName": "Back", "value": "back" },
+        { "displayName": "Front", "value": "front" }
+      ]
+    },
+    "webcam_fps": {
+      "type": "number",
+      "label": "Webcam Framerate (FPS)",
+      "icon": "speed",
+      "default": 30
     }
   }
 }

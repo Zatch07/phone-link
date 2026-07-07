@@ -123,10 +123,30 @@ Singleton {
                     ExtensionManager.setExtensionConfig("phone-link", "webcam_resolution", resolution)
                 }
             }
-            property int fps: 30
-            property bool mirrorHorizontally: false
-            property int rotateDegrees: 0
-            property string cameraFacing: "back"
+            property int fps: typeof ExtensionManager !== "undefined" ? (ExtensionManager.extensionConfigs["phone-link"]?.webcam_fps ?? 30) : 30
+            onFpsChanged: {
+                if (typeof ExtensionManager !== "undefined" && ExtensionManager.extensionConfigs["phone-link"]?.webcam_fps !== fps) {
+                    ExtensionManager.setExtensionConfig("phone-link", "webcam_fps", fps)
+                }
+            }
+            property bool mirrorHorizontally: typeof ExtensionManager !== "undefined" ? (ExtensionManager.extensionConfigs["phone-link"]?.webcam_mirror ?? false) : false
+            onMirrorHorizontallyChanged: {
+                if (typeof ExtensionManager !== "undefined" && ExtensionManager.extensionConfigs["phone-link"]?.webcam_mirror !== mirrorHorizontally) {
+                    ExtensionManager.setExtensionConfig("phone-link", "webcam_mirror", mirrorHorizontally)
+                }
+            }
+            property int rotateDegrees: typeof ExtensionManager !== "undefined" ? (ExtensionManager.extensionConfigs["phone-link"]?.webcam_rotate_degrees ?? 0) : 0
+            onRotateDegreesChanged: {
+                if (typeof ExtensionManager !== "undefined" && ExtensionManager.extensionConfigs["phone-link"]?.webcam_rotate_degrees !== rotateDegrees) {
+                    ExtensionManager.setExtensionConfig("phone-link", "webcam_rotate_degrees", rotateDegrees)
+                }
+            }
+            property string cameraFacing: typeof ExtensionManager !== "undefined" ? (ExtensionManager.extensionConfigs["phone-link"]?.webcam_camera_facing ?? "back") : "back"
+            onCameraFacingChanged: {
+                if (typeof ExtensionManager !== "undefined" && ExtensionManager.extensionConfigs["phone-link"]?.webcam_camera_facing !== cameraFacing) {
+                    ExtensionManager.setExtensionConfig("phone-link", "webcam_camera_facing", cameraFacing)
+                }
+            }
         }
 
         property QtObject microphone: QtObject {
