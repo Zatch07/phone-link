@@ -46,6 +46,7 @@ Both **DroidCam** and **Scrcpy (Screen Mirroring)** can work completely wireless
 2. Open the Quickshell **Installed Extensions** page, click the dropdown for **Phone Link**, and set the **Manual Wi-Fi IP** field to the IP shown on your phone.
 3. Click connect! DroidCam natively runs on port `4747`, so no other setup is needed.
 
+https://github.com/user-attachments/assets/9b5f47f7-27e1-4f11-ac54-bb32c847a200
 ### Setting up Scrcpy Wirelessly (Android 11+)
 Scrcpy relies on Android's built-in **ADB Wireless Debugging**, which works differently than DroidCam.
 
@@ -55,6 +56,8 @@ Scrcpy relies on Android's built-in **ADB Wireless Debugging**, which works diff
 4. In the Quickshell **Installed Extensions** page, check the **"Scrcpy: Use Wireless Debugging"** box.
 5. In the same settings view, copy the specific 5-digit number (e.g., `42139`) from your phone into the **"Scrcpy: Wireless Port"** field.
 6. Make sure your IP is also in the **"Scrcpy: Wireless IP"** field, and click the Scrcpy button!
+
+https://github.com/user-attachments/assets/865fe71c-1a3d-4390-a82d-7edceba4abc7
 
 *(Note: If you have never paired your phone with your PC via Wireless Debugging before, you must first open a terminal and run `adb pair 192.168.x.x:PORT` using the pairing port and code provided in your phone's "Pair device with pairing code" menu).*
 
