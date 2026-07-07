@@ -512,8 +512,8 @@ Singleton {
         root._userStopped = false
         root.stateChanged()
 
-        const conf = ExtensionServices.loaded["phone-link.KdeConnectService"].config.microphone
-        root._pendingPort = conf.port || 4748
+        const conf = ExtensionServices.loaded["phone-link.KdeConnectService"].config.webcam
+        root._pendingPort = conf.port || 4747
 
         // 1. Create null-sink & capture .monitor source name.
         setupProc.running = true
@@ -570,7 +570,7 @@ Singleton {
     function _decideAndLaunchAudio(): void {
         // If null-sink setup failed, _launchDroidcamAudio will surface
         // the error from `pulseSource` being empty.
-        const conf = ExtensionServices.loaded["phone-link.KdeConnectService"].config.microphone
+        const conf = ExtensionServices.loaded["phone-link.KdeConnectService"].config.webcam
 
         // Check if scrcpy is available — prefer it over droidcam.
         if (ExtensionServices.loaded["phone-link.KdeConnectService"].scrcpyAvailable) {
@@ -1064,7 +1064,7 @@ Singleton {
                 root._launchDroidcamAudio("usb", root._pendingPort, "")
             } else {
                 // USB not available — try the auto-detected Wi-Fi IP.
-                const conf = ExtensionServices.loaded["phone-link.KdeConnectService"].config.microphone
+                const conf = ExtensionServices.loaded["phone-link.KdeConnectService"].config.webcam
                 const ip = root._resolveIp(conf)
                 if (!ip) {
                     root.connecting = false
