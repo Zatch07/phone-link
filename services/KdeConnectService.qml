@@ -141,6 +141,12 @@ Singleton {
                     ExtensionManager.setExtensionConfig("phone-link", "webcam_rotate_degrees", rotateDegrees)
                 }
             }
+            property string cameraFacing: typeof ExtensionManager !== "undefined" ? (ExtensionManager.extensionConfigs["phone-link"]?.webcam_camera_facing ?? "back") : "back"
+            onCameraFacingChanged: {
+                if (typeof ExtensionManager !== "undefined" && ExtensionManager.extensionConfigs["phone-link"]?.webcam_camera_facing !== cameraFacing) {
+                    ExtensionManager.setExtensionConfig("phone-link", "webcam_camera_facing", cameraFacing)
+                }
+            }
         }
 
         property QtObject microphone: QtObject {
