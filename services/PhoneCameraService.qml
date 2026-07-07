@@ -415,7 +415,6 @@ Singleton {
             })
         }
         function toggle(): void { root.toggleCamera() }
-        function flip(): void { root.flipCamera() }
     }
 
     // ─── Public API ────────────────────────────────────────
@@ -605,21 +604,6 @@ Singleton {
             root.stopCamera()
             Qt.callLater(root.startCamera)
         }
-    }
-
-    /**
-     * Flips between front and back cameras.
-     * NOTE: droidcam-cli has NO flag for front/back camera selection — it
-     * must be toggled in the DroidCam Android app's settings UI. We persist
-     * the preference for documentation purposes only. The user should open
-     * the DroidCam app on their phone and tap the camera flip button there.
-     */
-    function flipCamera(): void {
-        const _svc = ExtensionServices.loaded["phone-link.KdeConnectService"]; const conf = (_svc && _svc.config) ? _svc.config.webcam : {}
-        conf.cameraFacing = (conf.cameraFacing === "front") ? "back" : "front"
-        // Do NOT restart the connection — droidcam-cli can't toggle the
-        // camera. The user needs to switch it in the DroidCam app on the
-        // phone. Persist the setting for UI display only.
     }
 
     /**

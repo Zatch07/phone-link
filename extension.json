@@ -31,7 +31,6 @@
     "webcam_resolution": "1280x720",
     "webcam_rotate_degrees": 0,
     "webcam_mirror": false,
-    "webcam_camera_facing": "back",
     "webcam_fps": 30
   },
   "configSchema": {
@@ -93,9 +92,7 @@
       "default": 0,
       "options": [
         { "displayName": "0°", "value": 0 },
-        { "displayName": "90°", "value": 90 },
-        { "displayName": "180°", "value": 180 },
-        { "displayName": "270°", "value": 270 }
+        { "displayName": "180°", "value": 180 }
       ]
     },
     "webcam_mirror": {
@@ -103,16 +100,6 @@
       "label": "Webcam: Mirror Horizontally",
       "icon": "flip",
       "default": false
-    },
-    "webcam_camera_facing": {
-      "type": "enum",
-      "label": "Webcam: Camera Facing",
-      "icon": "cameraswitch",
-      "default": "back",
-      "options": [
-        { "displayName": "Back", "value": "back" },
-        { "displayName": "Front", "value": "front" }
-      ]
     },
     "webcam_fps": {
       "type": "number",

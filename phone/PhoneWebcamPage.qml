@@ -300,37 +300,6 @@ ContentPage {
                     spacing: 6
                     MaterialSymbol {
                         Layout.alignment: Qt.AlignVCenter
-                        text: "cameraswitch"
-                        iconSize: 20
-                        color: Appearance.colors.colOnLayer2
-                        animateChange: true
-                    }
-                    StyledText {
-                        Layout.alignment: Qt.AlignVCenter
-                        text: Translation.tr("Flip camera")
-                        font.pixelSize: Appearance.font.pixelSize.small
-                        font.weight: Font.DemiBold
-                        color: Appearance.colors.colOnLayer2
-                    }
-                }
-                onClicked: (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).flipCamera()
-                StyledToolTip {
-                    text: Translation.tr("Switch between front and back camera")
-                }
-            }
-
-            RippleButton {
-                Layout.preferredHeight: 44
-                Layout.fillWidth: true
-                buttonRadius: Appearance.rounding.normal
-                colBackground: Appearance.colors.colLayer2
-                colBackgroundHover: Appearance.colors.colLayer2Hover
-                enabled: root._ready
-                opacity: enabled ? 1.0 : 0.5
-                contentItem: RowLayout {
-                    spacing: 6
-                    MaterialSymbol {
-                        Layout.alignment: Qt.AlignVCenter
                         text: "flip"
                         iconSize: 20
                         color: Appearance.colors.colOnLayer2
@@ -398,9 +367,7 @@ ContentPage {
             icon: "rotate_right"
             options: [
                 { displayName: "0°", value: 0 },
-                { displayName: "90°", value: 90 },
-                { displayName: "180°", value: 180 },
-                { displayName: "270°", value: 270 }
+                { displayName: "180°", value: 180 }
             ]
             currentValue: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.rotateDegrees
             onSelected: (v) => (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).setRotation(v)
@@ -412,24 +379,6 @@ ContentPage {
         icon: "video_settings"
         title: Translation.tr("Camera Settings")
 
-        // Camera facing: front / back
-        ConfigSelectionArray {
-            text: Translation.tr("Camera")
-            icon: "camera_front"
-            options: [
-                { displayName: Translation.tr("Front"), icon: "camera_front", value: "front" },
-                { displayName: Translation.tr("Back"), icon: "camera_rear", value: "back" }
-            ]
-            currentValue: (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.cameraFacing
-            onSelected: (v) => {
-                (ExtensionServices.loaded["phone-link.KdeConnectService"] || {}).config.webcam.cameraFacing = v
-                // DroidCam does not have a CLI flag to switch cameras.
-                // Persist the preference so the next fresh start uses it,
-                // but do NOT restart the running stream.
-                // See AGENTS.md Phone Module Round 5.
-                (ExtensionServices.loaded["phone-link.PhoneCameraService"] || {}).flipCamera()
-            }
-        }
 
         // Connection
         ConfigSelectionArray {
